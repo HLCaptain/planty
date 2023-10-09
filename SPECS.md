@@ -2,7 +2,7 @@
 
 Team:
 
-- Péter Antal
+- Péter Antal (ZE4SG8)
 - Dominik Buczny (C84AVJ)
 - Olivér Remény (IEY82F)
 - Balázs Püspök-Kiss (BL6ADS)
