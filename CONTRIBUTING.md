@@ -26,7 +26,7 @@ The client is using [Kotlin Coding Conventions](https://kotlinlang.org/docs/refe
 
 The broker is written in Python and is using [PEP8](https://www.python.org/dev/peps/pep-0008/) conventions. Make sure to follow them.
 
-### Documentation
+## Documentation
 
 Comment code where necessary. Keep your comments simple and try to use descriptive variable names.
 
