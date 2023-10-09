@@ -7,7 +7,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = "demo"
+rootProject.name = "planty-client"
 
 include(":android")
 include(":desktop")
