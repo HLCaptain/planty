@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.sqldelight)
 }
 
-group = "com.example"
+group = "nest"
 version = "1.0-SNAPSHOT"
 
 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
@@ -31,6 +31,7 @@ kotlin {
                 api(compose.foundation)
                 api(compose.materialIconsExtended)
                 api(compose.material3)
+                api(libs.kmp.viewmodel)
                 implementation(libs.voyager.navigator)
                 implementation(libs.voyager.bottomSheetNavigator)
                 implementation(libs.voyager.tabNavigator)
@@ -39,6 +40,7 @@ kotlin {
                 implementation(libs.ktor.core)
                 implementation(libs.koin.core)
                 implementation(libs.napier)
+                implementation(libs.store)
             }
         }
 
@@ -79,7 +81,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.example.demo"
+    namespace = "nest.planty"
     compileSdk = 34
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
@@ -94,7 +96,7 @@ android {
 sqldelight {
     databases {
         create("Database") {
-            packageName.set("com.example")
+            packageName.set("nest.planty.db")
         }
     }
 }

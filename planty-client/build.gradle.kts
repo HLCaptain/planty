@@ -1,4 +1,4 @@
-group = "com.example"
+group = "nest"
 version = "1.0-SNAPSHOT"
 
 allprojects {

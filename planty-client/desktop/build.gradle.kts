@@ -5,7 +5,7 @@ plugins {
     id("org.jetbrains.compose")
 }
 
-group = "com.example"
+group = "nest"
 version = "1.0-SNAPSHOT"
 
 kotlin {

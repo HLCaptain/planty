@@ -1,4 +1,4 @@
-package com.example.demo
+package nest.planty
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -17,7 +17,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import com.example.common.UIShow
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

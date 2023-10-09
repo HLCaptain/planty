@@ -1,4 +1,4 @@
-package com.example.common
+package nest.planty
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -7,6 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import nest.planty.getPlatformName
 
 @Composable
 internal fun App() {

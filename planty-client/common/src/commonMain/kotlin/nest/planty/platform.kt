@@ -1,3 +1,3 @@
-package com.example.common
+package nest.planty
 
 expect fun getPlatformName(): String

@@ -4,7 +4,7 @@ plugins {
     kotlin("android")
 }
 
-group = "com.example"
+group = "nest"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -12,10 +12,10 @@ repositories {
 }
 
 android {
-    namespace = "com.example.demo"
+    namespace = "nest"
     compileSdk = 34
     defaultConfig {
-        applicationId = "com.example.demo"
+        applicationId = "nest.planty.client"
         minSdk = 21
         targetSdk = 34
         versionCode = 1
