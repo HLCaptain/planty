@@ -4,7 +4,7 @@ Team:
 
 - Péter Antal
 - Dominik Buczny (C84AVJ)
-- Olivér Remény
+- Olivér Remény (IEY82F)
 - Balázs Püspök-Kiss (BL6ADS)
 
 Planty is a plant health monitoring system. Its aim is to help you keep your plants healthy and happy. It offers a mobile app to monitor your plants' health. You can add sensors and hardware (actuators) to monitor and control the plant's environment. For example, you can measure and control the soil moisture, light intensity, temperature, and humidity with the right sensors and actuators.
