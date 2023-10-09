@@ -30,7 +30,7 @@ There are multiple ways to run the client app for multiple platforms.
 
 ## Contributing
 
-Feel free to open an issue for any bugs or feature requests.
+Feel free to open an issue for any bugs or feature requests. See more in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 The client is using [Kotlin Coding Conventions](https://kotlinlang.org/docs/reference/coding-conventions.html).
 
