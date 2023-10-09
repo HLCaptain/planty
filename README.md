@@ -2,6 +2,8 @@
 
 Planty is a plan health monitoring app. It allows you to monitor your plants' health and control their environment.
 
+It consists of a [multiplatform client app](planty-client/README.md) and a [sensor broker](planty-broker/README.md).
+
 ## Installation
 
 There are multiple ways to run the client app for multiple platforms.
