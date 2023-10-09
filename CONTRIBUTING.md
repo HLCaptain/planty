@@ -2,7 +2,7 @@
 
 ## How to contribute
 
-0. Check for already existing issues if you have a feature reqest.
+0. Check for already existing issues if you have a feature request.
 1. Open issues for any bugs or feature requests.
 2. Fork the repository.
 3. Create a new branch from `dev` branch for each issue.
@@ -28,7 +28,11 @@ The broker is written in Python and is using [PEP8](https://www.python.org/dev/p
 
 ## Documentation
 
-Comment code where necessary. Keep your comments simple and try to use descriptive variable names.
+Comment code where necessary, follow coding convention rules.
+
+### Keep your code readable
+
+Keep your comments simple and try to use descriptive variable names.
 
 ```kotlin
 // Good
@@ -60,8 +64,14 @@ if (plant.soilMoisture < 0.5 && currentTime.hour < 10 && currentTime.hour > 6) {
 }
 ```
 
+### Feature Documentation
+
 For each larger feature, like communication between the broker and sensors via `MQTT` protocol, make sure to write a proper, but not too extensive documentation using `Markdown`. It should be understandable for someone who is not familiar with the project.
 
 Try to use the template from [Make a README](https://www.makeareadme.com/) and place it in the proper folder.
 
 If you see an architectural document referencing related features or issues, make sure to **link them**.
+
+### Diagrams and Sketches
+
+If you want to include diagrams or sketches, use [Excalidraw](https://excalidraw.com/) and export them as `SVG` files to the locally created `assets` folder. You can save the `.excalidraw` files in the `assets` folder to modify later if needed.
