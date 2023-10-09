@@ -1,0 +1,5 @@
+# Ignore PDFs, documentation is written using Markdown (.md) files
+**/*.pdf
+
+# You can ignore specific files with
+# !/path/to/specific_file.pdf

@@ -50,4 +50,4 @@ As a user, I want to provision my plant to keep it healthy. In case the moisture
 
 ### Changing plant settings
 
-As a user, I want to change the settings of my plant so that I can adjust the environment to the plant's needs. When I change the settings, I want to see the changes in the app and in real life.
+As a user, I want to change the settings of my plant so that I can adjust the environment to the plant's needs. When I change the settings, I want to see the changes in the app and in real-life (e.g. water pump starts watering the plant if soil moisture is too low).
