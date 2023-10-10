@@ -10,16 +10,9 @@ version = "1.0-SNAPSHOT"
 
 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
 kotlin {
-    androidTarget {
-        compilations.all {
-            kotlinOptions.jvmTarget = JavaVersion.VERSION_17.toString()
-        }
-    }
-    jvm("desktop") {
-        compilations.all {
-            kotlinOptions.jvmTarget = JavaVersion.VERSION_17.toString()
-        }
-    }
+    jvmToolchain(17)
+    androidTarget()
+    jvm("desktop")
     js(IR) {
         browser()
     }
@@ -31,7 +24,6 @@ kotlin {
                 api(compose.foundation)
                 api(compose.materialIconsExtended)
                 api(compose.material3)
-                api(libs.kmp.viewmodel)
                 implementation(libs.voyager.navigator)
                 implementation(libs.voyager.bottomSheetNavigator)
                 implementation(libs.voyager.tabNavigator)

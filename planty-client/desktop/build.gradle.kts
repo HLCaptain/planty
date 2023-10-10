@@ -10,9 +10,6 @@ version = "1.0-SNAPSHOT"
 
 kotlin {
     jvm {
-        compilations.all {
-            kotlinOptions.jvmTarget = JavaVersion.VERSION_17.toString()
-        }
         withJava()
     }
     sourceSets {

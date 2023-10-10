@@ -12,10 +12,10 @@ repositories {
 }
 
 android {
-    namespace = "nest"
+    namespace = "nest.planty"
     compileSdk = 34
     defaultConfig {
-        applicationId = "nest.planty.client"
+        applicationId = "nest.planty"
         minSdk = 21
         targetSdk = 34
         versionCode = 1
@@ -27,9 +27,6 @@ android {
     }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17.toString()
-    }
-    kotlin {
-        jvmToolchain(17)
     }
     buildTypes {
         getByName("release") {
