@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.sqldelight)
     alias(libs.plugins.icerock.resources)
+    alias(libs.plugins.google.ksp)
 }
 
 group = "nest"
@@ -31,7 +32,10 @@ kotlin {
                 implementation(libs.voyager.transitions)
                 implementation(libs.voyager.koin)
                 implementation(libs.ktor.core)
+                implementation(project.dependencies.platform(libs.koin.bom))
                 implementation(libs.koin.core)
+                implementation(project.dependencies.platform(libs.koin.annotations.bom))
+                implementation(libs.koin.annotations)
                 implementation(libs.napier)
                 implementation(libs.store)
                 api(libs.icerock.resources)
@@ -52,6 +56,8 @@ kotlin {
                 api(libs.androidx.core)
                 implementation(libs.ktor.jvm)
                 implementation(libs.voyager.androidx)
+                implementation(libs.koin.android)
+                implementation(libs.koin.logger.slf4j)
             }
         }
 
@@ -60,6 +66,8 @@ kotlin {
             dependencies {
                 api(compose.preview)
                 implementation(libs.ktor.jvm)
+                implementation(libs.koin.ktor)
+                implementation(libs.koin.logger.slf4j)
             }
         }
 
@@ -76,6 +84,14 @@ kotlin {
 
         val jsTest by getting
     }
+}
+
+dependencies {
+    add("kspCommonMainMetadata", libs.koin.ksp)
+}
+
+ksp {
+    arg("KOIN_CONFIG_CHECK","true")
 }
 
 android {

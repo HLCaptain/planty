@@ -9,24 +9,36 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.koin.getScreenModel
 import dev.icerock.moko.resources.compose.painterResource
 import nest.planty.MR
 import nest.planty.getPlatformName
 
-@Composable
-internal fun HomeScreen() {
-    Surface {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Column {
-                Image(
-                    painter = painterResource(MR.images.flower_image),
-                    contentDescription = "flower image"
-                )
+
+
+class HomeScreen : Screen {
+    @Composable
+    override fun Content() {
+        HomeScreen()
+    }
+
+    @Composable
+    internal fun HomeScreen() {
+        val screenModel = getScreenModel<HomeScreenModel>()
+        Surface {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Column {
+                    Image(
+                        painter = painterResource(MR.images.flower_image),
+                        contentDescription = "flower image"
+                    )
+                }
+                Text(getPlatformName())
             }
-            Text(getPlatformName())
         }
     }
 }
