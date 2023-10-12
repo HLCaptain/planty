@@ -3,6 +3,7 @@ plugins {
     id("com.android.library")
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.sqldelight)
+    alias(libs.plugins.icerock.resources)
 }
 
 group = "nest"
@@ -33,6 +34,8 @@ kotlin {
                 implementation(libs.koin.core)
                 implementation(libs.napier)
                 implementation(libs.store)
+                api(libs.icerock.resources)
+                api(libs.icerock.resources.compose)
             }
         }
 
@@ -43,6 +46,7 @@ kotlin {
         }
 
         val androidMain by getting {
+            dependsOn(commonMain)
             dependencies {
                 api(libs.androidx.appcompat)
                 api(libs.androidx.core)
@@ -52,6 +56,7 @@ kotlin {
         }
 
         val desktopMain by getting {
+            dependsOn(commonMain)
             dependencies {
                 api(compose.preview)
                 implementation(libs.ktor.jvm)
@@ -61,6 +66,7 @@ kotlin {
         val desktopTest by getting
 
         val jsMain by getting {
+            dependsOn(commonMain)
             dependencies {
                 api(compose.html.core)
                 implementation(libs.ktor.js)
@@ -91,4 +97,8 @@ sqldelight {
             packageName.set("nest.planty.db")
         }
     }
+}
+
+multiplatformResources {
+    multiplatformResourcesPackage = "nest.planty"
 }

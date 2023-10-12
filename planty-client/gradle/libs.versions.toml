@@ -6,6 +6,7 @@ ktor = "2.3.4"
 koin = "3.5.0"
 voyager = "1.0.0-rc07"
 sqldelight = "2.0.0"
+icerock-resources = "0.23.0"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -13,6 +14,7 @@ android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose" }
+icerock-resources = { id = "dev.icerock.mobile.multiplatform-resources", version.ref = "icerock-resources" }
 
 [libraries]
 ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
@@ -33,3 +35,6 @@ androidx-core = { module = "androidx.core:core-ktx", version = "1.12.0" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version = "1.8.0" }
 napier = { module = "io.github.aakira:napier", version = "2.6.1" }
 store = { module = "org.mobilenativefoundation.store:store5", version = "5.0.0" }
+
+icerock-resources = { module = "dev.icerock.moko:resources", version.ref = "icerock-resources" }
+icerock-resources-compose = { module = "dev.icerock.moko:resources-compose", version.ref = "icerock-resources" }

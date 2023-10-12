@@ -17,4 +17,5 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.sqldelight) apply false
     alias(libs.plugins.jetbrains.compose) apply false
+    alias(libs.plugins.icerock.resources) apply false
 }
