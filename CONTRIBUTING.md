@@ -1,5 +1,7 @@
 # Contributing to Planty
 
+If you are not sure about something, feel free to ask in the discussion of the issue. We are happy to help!
+
 ## How to contribute
 
 0. Check for already existing issues if you have a feature request.
@@ -16,15 +18,15 @@
 
 ## Conventions
 
-If you are not sure about something, feel free to ask in the discussion of the issue. We are happy to help!
+To keep the code clean and readable, we are using coding conventions and rules. Make sure to follow them where possible.
 
 ### Client
 
-The client is using [Kotlin Coding Conventions](https://kotlinlang.org/docs/reference/coding-conventions.html). Make sure to follow them.
+The client is using [Kotlin Coding Conventions](https://kotlinlang.org/docs/reference/coding-conventions.html).
 
 ### Sensor Broker
 
-The broker is written in Python and is using [PEP8](https://www.python.org/dev/peps/pep-0008/) conventions. Make sure to follow them.
+The broker is written in Python and is using [PEP8](https://www.python.org/dev/peps/pep-0008/) conventions.
 
 ## Documentation
 
