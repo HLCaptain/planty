@@ -1,7 +1,7 @@
 [versions]
 kotlin = "1.9.10"
 ksp = "1.9.10-1.0.13"
-agp = "8.1.2"
+agp = "8.2.0-rc01"
 compose = "1.5.1"
 ktor = "2.3.4"
 koin = "3.5.1"
@@ -33,10 +33,11 @@ koin-compose = { module = "io.insert-koin:koin-compose" }
 koin-core-coroutines = { module = "io.insert-koin:koin-core-coroutines" }
 koin-android = { module = "io.insert-koin:koin-android" }
 
-koin-annotations-bom = { module = "io.insert-koin:koin-annotations-bom", version.ref = "koin-annotations" }
-koin-annotations = { module = "io.insert-koin:koin-annotations" }
-koin-ksp = { module = "io.insert-koin:koin-ksp-compiler" }
+# No Koin Annotations BOM due to problem with KSP being problematic to add to a multi-module project
+koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "koin-annotations" }
+koin-ksp = { module = "io.insert-koin:koin-ksp-compiler", version.ref = "koin-annotations" }
 
+voyager-core = { module = "cafe.adriel.voyager:voyager-core", version.ref = "voyager" }
 voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
 voyager-bottomSheetNavigator = { module = "cafe.adriel.voyager:voyager-bottom-sheet-navigator", version.ref = "voyager" }
 voyager-tabNavigator = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyager" }
@@ -52,3 +53,5 @@ store = { module = "org.mobilenativefoundation.store:store5", version = "5.0.0" 
 
 icerock-resources = { module = "dev.icerock.moko:resources", version.ref = "icerock-resources" }
 icerock-resources-compose = { module = "dev.icerock.moko:resources-compose", version.ref = "icerock-resources" }
+
+kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version = "1.7.3" }

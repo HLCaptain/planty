@@ -40,7 +40,7 @@ The project is organized into several modules (or packages):
 - `repo`: contains `Repositories`.
   - `model`: contains the data models, independent from `DataSource` class implementations.
 - `manager`: contains `Manager` classes.
-- `di`: contains dependency injection related classes, like `Module.kt` containing the factories for dependency injections in case of `Koin`.
+- `di`: contains dependency injection related classes, like `AppModule.kt` and `PlatformModule.kt` containing the factories for dependency injections in case of `Koin`. Other classes may contain submodules for dependency injection.
 - `util`: additional classes that are used across the project.
 
 This structure can be altered if needed, but it is recommended to keep it as simple as possible. Singleton-like classes (`Activity` in case of Android, or `Main` in case of Desktop can be placed in the root of the package).

@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
+
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
@@ -20,26 +22,28 @@ kotlin {
     }
     sourceSets {
         val commonMain by getting {
+            kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
             dependencies {
                 api(compose.runtime)
                 api(compose.ui)
                 api(compose.foundation)
                 api(compose.materialIconsExtended)
                 api(compose.material3)
+                implementation(libs.voyager.core)
                 implementation(libs.voyager.navigator)
                 implementation(libs.voyager.bottomSheetNavigator)
                 implementation(libs.voyager.tabNavigator)
                 implementation(libs.voyager.transitions)
                 implementation(libs.voyager.koin)
                 implementation(libs.ktor.core)
-                implementation(project.dependencies.platform(libs.koin.bom))
-                implementation(libs.koin.core)
-                implementation(project.dependencies.platform(libs.koin.annotations.bom))
-                implementation(libs.koin.annotations)
+                api(project.dependencies.platform(libs.koin.bom))
+                api(libs.koin.core)
+                api(libs.koin.annotations)
                 implementation(libs.napier)
                 implementation(libs.store)
-                api(libs.icerock.resources)
-                api(libs.icerock.resources.compose)
+                implementation(libs.icerock.resources)
+                implementation(libs.icerock.resources.compose)
+                implementation(libs.kotlinx.coroutines)
             }
         }
 
@@ -52,10 +56,9 @@ kotlin {
         val androidMain by getting {
             dependsOn(commonMain)
             dependencies {
-                api(libs.androidx.appcompat)
-                api(libs.androidx.core)
+                implementation(libs.androidx.appcompat)
+                implementation(libs.androidx.core)
                 implementation(libs.ktor.jvm)
-                implementation(libs.voyager.androidx)
                 implementation(libs.koin.android)
                 implementation(libs.koin.logger.slf4j)
             }
@@ -64,7 +67,7 @@ kotlin {
         val desktopMain by getting {
             dependsOn(commonMain)
             dependencies {
-                api(compose.preview)
+                implementation(compose.preview)
                 implementation(libs.ktor.jvm)
                 implementation(libs.koin.ktor)
                 implementation(libs.koin.logger.slf4j)
@@ -76,7 +79,7 @@ kotlin {
         val jsMain by getting {
             dependsOn(commonMain)
             dependencies {
-                api(compose.html.core)
+                implementation(compose.html.core)
                 implementation(libs.ktor.js)
                 implementation(libs.ktor.jsonjs)
             }
@@ -90,8 +93,24 @@ dependencies {
     add("kspCommonMainMetadata", libs.koin.ksp)
 }
 
+// WORKAROUND: ADD this dependsOn("kspCommonMainKotlinMetadata") instead of above dependencies
+tasks.withType<KotlinCompile<*>>().configureEach {
+    if (name != "kspCommonMainKotlinMetadata") {
+        dependsOn("kspCommonMainKotlinMetadata")
+    }
+}
+afterEvaluate {
+    tasks.filter {
+        it.name.contains("SourcesJar", true)
+    }?.forEach {
+        println("SourceJarTask====>${it.name}")
+        it.dependsOn("kspCommonMainKotlinMetadata")
+    }
+}
+
 ksp {
-    arg("KOIN_CONFIG_CHECK","true")
+    arg("KOIN_CONFIG_CHECK", "true")
+//    arg("KOIN_DEFAULT_MODULE", "false")
 }
 
 android {
@@ -100,10 +119,6 @@ android {
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
         minSdk = 21
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 
