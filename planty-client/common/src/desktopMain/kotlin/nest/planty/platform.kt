@@ -6,6 +6,8 @@ actual fun getPlatformName(): String {
     return "JVM"
 }
 
+actual interface JavaSerializable
+
 @Composable
 fun UIShow() {
     App()
