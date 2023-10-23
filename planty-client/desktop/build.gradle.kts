@@ -1,7 +1,7 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
-    kotlin("multiplatform")
+    alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.icerock.resources)
 }
@@ -13,8 +13,8 @@ kotlin {
     sourceSets {
         val jvmMain by getting {
             dependencies {
-                implementation(compose.desktop.currentOs)
                 implementation(project(":common"))
+                implementation(compose.desktop.currentOs)
                 implementation(libs.koin.compose)
                 implementation(libs.icerock.resources.compose)
 
@@ -38,7 +38,6 @@ kotlin {
                 implementation("org.jetbrains.skiko:skiko-awt-runtime-$target:$skikoVersion")
             }
         }
-        val jvmTest by getting
     }
 }
 
@@ -51,8 +50,4 @@ compose.desktop {
             packageVersion = "1.0.0"
         }
     }
-}
-
-multiplatformResources {
-    multiplatformResourcesPackage = "nest.planty"
 }

@@ -1,8 +1,8 @@
 import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 
 plugins {
-    kotlin("multiplatform")
-    id("com.android.library")
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.sqldelight)
     alias(libs.plugins.icerock.resources)
@@ -15,11 +15,11 @@ version = "1.0-SNAPSHOT"
 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
 kotlin {
     jvmToolchain(17)
+    applyDefaultHierarchyTemplate()
     androidTarget()
     jvm("desktop")
-    js(IR) {
-        browser()
-    }
+    js(IR) { browser() }
+
     sourceSets {
         val commonMain by getting {
             kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
@@ -40,8 +40,8 @@ kotlin {
                 api(libs.koin.annotations)
                 implementation(libs.napier)
                 implementation(libs.store)
-                implementation(libs.icerock.resources)
-                implementation(libs.icerock.resources.compose)
+                api(libs.icerock.resources)
+                api(libs.icerock.resources.compose)
                 implementation(libs.kotlinx.coroutines)
             }
         }
@@ -74,23 +74,19 @@ kotlin {
             }
         }
 
-        val desktopTest by getting
-
         val jsMain by getting {
-            dependsOn(commonMain)
             dependencies {
                 implementation(compose.html.core)
-                implementation(libs.ktor.js)
-                implementation(libs.ktor.jsonjs)
             }
         }
 
-        val jsTest by getting
+        val desktopTest by getting
     }
 }
 
 dependencies {
     add("kspCommonMainMetadata", libs.koin.ksp)
+//    commonMainApi(libs.icerock.resources)
 }
 
 // WORKAROUND: ADD this dependsOn("kspCommonMainKotlinMetadata") instead of above dependencies
@@ -102,7 +98,7 @@ tasks.withType<KotlinCompile<*>>().configureEach {
 afterEvaluate {
     tasks.filter {
         it.name.contains("SourcesJar", true)
-    }?.forEach {
+    }.forEach {
         println("SourceJarTask====>${it.name}")
         it.dependsOn("kspCommonMainKotlinMetadata")
     }

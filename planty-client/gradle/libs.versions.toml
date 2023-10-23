@@ -1,6 +1,6 @@
 [versions]
-kotlin = "1.9.10"
-ksp = "1.9.10-1.0.13"
+kotlin = "1.9.20-RC"
+ksp = "1.9.20-RC-1.0.13"
 agp = "8.2.0-rc01"
 compose = "1.5.10-rc01"
 ktor = "2.3.4"
@@ -14,6 +14,8 @@ icerock-resources = "0.23.0"
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 google-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
@@ -24,6 +26,7 @@ ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-jvm = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
 ktor-jsonjs = { module = "io.ktor:ktor-client-json-js", version.ref = "ktor" }
+ktor-core-wasm = { module = "io.ktor:ktor-client-core-wasm", version = "2.3.3-wasm0" }
 
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin" }
 koin-core = { module = "io.insert-koin:koin-core" }
@@ -53,3 +56,5 @@ icerock-resources = { module = "dev.icerock.moko:resources", version.ref = "icer
 icerock-resources-compose = { module = "dev.icerock.moko:resources-compose", version.ref = "icerock-resources" }
 
 kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version = "1.7.3" }
+kotlinx-coroutines-wasm = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-wasm", version = "1.7.2-wasm0" }
+kotlinx-serialization-wasm = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core-wasm", version = "1.5.2-wasm0" }
