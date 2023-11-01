@@ -8,7 +8,7 @@ koin = "3.5.1"
 koin-annotations = "1.3.0"
 voyager = "1.0.0-rc08"
 sqldelight = "2.0.0"
-icerock-resources = "0.23.0"
+libres = "1.2.0"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -19,7 +19,7 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 google-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-icerock-resources = { id = "dev.icerock.mobile.multiplatform-resources", version.ref = "icerock-resources" }
+libres = { id = "io.github.skeptick.libres", version.ref = "libres" }
 
 [libraries]
 ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
@@ -52,8 +52,7 @@ androidx-activity-compose = { module = "androidx.activity:activity-compose", ver
 napier = { module = "io.github.aakira:napier", version = "2.6.1" }
 store = { module = "org.mobilenativefoundation.store:store5", version = "5.0.0" }
 
-#icerock-resources = { module = "dev.icerock.moko:resources", version.ref = "icerock-resources" }
-#icerock-resources-compose = { module = "dev.icerock.moko:resources-compose", version.ref = "icerock-resources" }
+libres-compose = { module = "io.github.skeptick.libres:libres-compose", version.ref = "libres" }
 
 kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version = "1.7.3" }
 kotlinx-coroutines-wasm = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-wasm", version = "1.7.2-wasm0" }

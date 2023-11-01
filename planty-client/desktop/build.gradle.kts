@@ -1,14 +1,12 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.jetbrains.compose)
-//    alias(libs.plugins.icerock.resources)
     application
 }
 
 dependencies {
     implementation(compose.desktop.currentOs)
     implementation(libs.koin.compose)
-//    implementation(libs.icerock.resources.compose)
     implementation(project(":common"))
 
     // Workaround for https://slack-chats.kotlinlang.org/t/14162593/hello-trying-to-update-kotlin-to-1-9-0-but-with-version-1-4-

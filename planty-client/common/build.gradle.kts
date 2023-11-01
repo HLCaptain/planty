@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.sqldelight)
-//    alias(libs.plugins.icerock.resources)
+    alias(libs.plugins.libres)
     alias(libs.plugins.google.ksp)
 }
 
@@ -38,8 +38,7 @@ kotlin {
                 api(libs.koin.annotations)
                 implementation(libs.napier)
                 implementation(libs.store)
-//                api(libs.icerock.resources)
-//                api(libs.icerock.resources.compose)
+                implementation(libs.libres.compose)
                 implementation(libs.kotlinx.coroutines)
             }
         }
@@ -120,9 +119,12 @@ sqldelight {
     }
 }
 
-//multiplatformResources {
-//    multiplatformResourcesPackage = "nest.planty"
-//}
+libres {
+    generatedClassName = "Res" // "Res" by default
+    generateNamedArguments = true // false by default
+    baseLocaleLanguageCode = "en" // "en" by default
+    camelCaseNamesForAppleFramework = false // false by default
+}
 
 kotlin.sourceSets.all {
     languageSettings.optIn("kotlin.experimental.ExperimentalObjCName")

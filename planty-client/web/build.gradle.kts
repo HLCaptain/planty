@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.jetbrains.compose)
-//    alias(libs.plugins.icerock.resources)
 }
 
 kotlin {

@@ -2,5 +2,5 @@
 <resources>
     <string name="app_name">MR</string>
     <string name="hello_world">Hello world!</string>
-    <string name="hello_x">Hello %s!</string>
+    <string name="hello_x">Hello ${name}!</string>
 </resources>

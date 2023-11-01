@@ -19,5 +19,5 @@ plugins {
     alias(libs.plugins.sqldelight) apply false
     alias(libs.plugins.jetbrains.compose) apply false
     alias(libs.plugins.google.ksp) apply false
-//    alias(libs.plugins.icerock.resources)
+    alias(libs.plugins.libres) apply false
 }

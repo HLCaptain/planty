@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
+import nest.planty.Res
 import nest.planty.getPlatformName
 
 class HomeScreen : Screen {
@@ -32,10 +33,10 @@ class HomeScreen : Screen {
             ) {
                 Column {
 //                    Image(
-//                        painter = painterResource(MR.images.flower_image),
+//                        painter = Res.image.flower_image.painterResource(),
 //                        contentDescription = "flower image"
 //                    )
-                    Text(getPlatformName())
+                    Text(text = Res.string.hello_x.format(getPlatformName()))
                     Button(onClick = { screenModel.incrementCounter() }) {
                         Text("Counter: $counter")
                     }
