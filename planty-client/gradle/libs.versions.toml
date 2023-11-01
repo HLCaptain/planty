@@ -1,8 +1,8 @@
 [versions]
-kotlin = "1.9.20-RC"
-ksp = "1.9.20-RC-1.0.13"
-agp = "8.2.0-rc01"
-compose = "1.5.10-rc01"
+kotlin = "1.9.20"
+ksp = "1.9.20-1.0.13"
+agp = "8.2.0-rc02"
+compose = "1.5.10"
 ktor = "2.3.4"
 koin = "3.5.1"
 koin-annotations = "1.3.0"
@@ -52,8 +52,8 @@ androidx-activity-compose = { module = "androidx.activity:activity-compose", ver
 napier = { module = "io.github.aakira:napier", version = "2.6.1" }
 store = { module = "org.mobilenativefoundation.store:store5", version = "5.0.0" }
 
-icerock-resources = { module = "dev.icerock.moko:resources", version.ref = "icerock-resources" }
-icerock-resources-compose = { module = "dev.icerock.moko:resources-compose", version.ref = "icerock-resources" }
+#icerock-resources = { module = "dev.icerock.moko:resources", version.ref = "icerock-resources" }
+#icerock-resources-compose = { module = "dev.icerock.moko:resources-compose", version.ref = "icerock-resources" }
 
 kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version = "1.7.3" }
 kotlinx-coroutines-wasm = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-wasm", version = "1.7.2-wasm0" }

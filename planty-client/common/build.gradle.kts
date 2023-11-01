@@ -5,23 +5,21 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.sqldelight)
-    alias(libs.plugins.icerock.resources)
+//    alias(libs.plugins.icerock.resources)
     alias(libs.plugins.google.ksp)
 }
 
 group = "nest"
 version = "1.0-SNAPSHOT"
 
-@OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
 kotlin {
     jvmToolchain(17)
-    applyDefaultHierarchyTemplate()
     androidTarget()
-    jvm("desktop")
+    jvm()
     js(IR) { browser() }
 
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
             dependencies {
                 api(compose.runtime)
@@ -40,20 +38,19 @@ kotlin {
                 api(libs.koin.annotations)
                 implementation(libs.napier)
                 implementation(libs.store)
-                api(libs.icerock.resources)
-                api(libs.icerock.resources.compose)
+//                api(libs.icerock.resources)
+//                api(libs.icerock.resources.compose)
                 implementation(libs.kotlinx.coroutines)
             }
         }
 
-        val commonTest by getting {
+        commonTest {
             dependencies {
                 implementation(kotlin("test"))
             }
         }
 
-        val androidMain by getting {
-            dependsOn(commonMain)
+        androidMain {
             dependencies {
                 implementation(libs.androidx.appcompat)
                 implementation(libs.androidx.core)
@@ -63,8 +60,7 @@ kotlin {
             }
         }
 
-        val desktopMain by getting {
-            dependsOn(commonMain)
+        jvmMain {
             dependencies {
                 implementation(compose.preview)
                 implementation(compose.desktop.common)
@@ -74,13 +70,11 @@ kotlin {
             }
         }
 
-        val jsMain by getting {
+        jsMain {
             dependencies {
                 implementation(compose.html.core)
             }
         }
-
-        val desktopTest by getting
     }
 }
 
@@ -126,6 +120,10 @@ sqldelight {
     }
 }
 
-multiplatformResources {
-    multiplatformResourcesPackage = "nest.planty"
+//multiplatformResources {
+//    multiplatformResourcesPackage = "nest.planty"
+//}
+
+kotlin.sourceSets.all {
+    languageSettings.optIn("kotlin.experimental.ExperimentalObjCName")
 }
