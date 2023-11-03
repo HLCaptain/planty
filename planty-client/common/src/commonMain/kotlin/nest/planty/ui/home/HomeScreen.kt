@@ -32,8 +32,14 @@ class HomeScreen : Screen {
                 contentAlignment = Alignment.Center
             ) {
                 Column {
+                    // Libres implementation:
 //                    Image(
 //                        painter = Res.image.flower_image.painterResource(),
+//                        contentDescription = "flower image"
+//                    )
+                    // OR if using compose resources:
+//                    Image(
+//                        painter = painterResource("flower_image.jpg),
 //                        contentDescription = "flower image"
 //                    )
                     Text(text = Res.string.hello_x.format(getPlatformName()))

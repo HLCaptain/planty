@@ -27,6 +27,9 @@ kotlin {
                 api(compose.foundation)
                 api(compose.materialIconsExtended)
                 api(compose.material3)
+                // FIXME: use compose resources for loading images in the future
+//                @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+//                implementation(compose.components.resources)
                 api(libs.voyager.navigator)
                 api(libs.voyager.bottomSheetNavigator)
                 api(libs.voyager.tabNavigator)
@@ -79,7 +82,6 @@ kotlin {
 
 dependencies {
     add("kspCommonMainMetadata", libs.koin.ksp)
-//    commonMainApi(libs.icerock.resources)
 }
 
 // WORKAROUND: ADD this dependsOn("kspCommonMainKotlinMetadata") instead of above dependencies
