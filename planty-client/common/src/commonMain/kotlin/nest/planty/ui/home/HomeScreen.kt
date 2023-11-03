@@ -1,9 +1,11 @@
 package nest.planty.ui.home
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,7 +50,16 @@ class HomeScreen : Screen {
 //                    )
                     Text(text = Res.string.hello_x.format(getPlatformName()))
                     Button(onClick = { screenModel.incrementCounter() }) {
-                        Text("Counter: $counter")
+                        Crossfade(targetState = counter != null) {
+                            if (it) {
+                                Text(Res.string.clicked_x_times.format(counter!!, counter!!.toString()))
+                            } else {
+                                CircularProgressIndicator()
+                            }
+                        }
+                    }
+                    Button(onClick = { screenModel.resetCounter() }) {
+                        Text(Res.string.reset_clicks)
                     }
                 }
             }

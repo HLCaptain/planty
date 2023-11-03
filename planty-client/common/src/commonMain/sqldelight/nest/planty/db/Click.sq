@@ -1,0 +1,22 @@
+CREATE TABLE Click (
+    id INTEGER PRIMARY KEY NOT NULL,
+    number INTEGER NOT NULL
+);
+
+INSERT INTO Click (id, number)
+VALUES (0, 0);
+
+incrementClicks:
+UPDATE Click
+SET number = number + 1
+WHERE id = 0;
+
+getClicks:
+SELECT number
+FROM Click
+WHERE id = 0;
+
+resetClicks:
+UPDATE Click
+SET number = 0
+WHERE id = 0;
