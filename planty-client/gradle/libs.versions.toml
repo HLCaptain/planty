@@ -35,6 +35,7 @@ koin-logger-slf4j = { module = "io.insert-koin:koin-logger-slf4j" }
 koin-compose = { module = "io.insert-koin:koin-compose" }
 koin-core-coroutines = { module = "io.insert-koin:koin-core-coroutines" }
 koin-android = { module = "io.insert-koin:koin-android" }
+koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose" }
 
 # No Koin Annotations BOM due to problem with KSP being problematic to add to a multi-module project
 koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "koin-annotations" }
@@ -52,8 +53,14 @@ androidx-activity-compose = { module = "androidx.activity:activity-compose", ver
 napier = { module = "io.github.aakira:napier", version = "2.6.1" }
 store = { module = "org.mobilenativefoundation.store:store5", version = "5.0.0" }
 
+sqldelight-jvm = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }
+sqldelight-android = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
+sqldelight-js = { module = "app.cash.sqldelight:web-worker-driver", version.ref = "sqldelight" }
+sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
+
 libres-compose = { module = "io.github.skeptick.libres:libres-compose", version.ref = "libres" }
 
 kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version = "1.7.3" }
 kotlinx-coroutines-wasm = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-wasm", version = "1.7.2-wasm0" }
 kotlinx-serialization-wasm = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core-wasm", version = "1.5.2-wasm0" }
+kotlinx-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version = "0.22.0" }

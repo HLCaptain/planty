@@ -7,6 +7,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -26,6 +27,9 @@ class HomeScreen : Screen {
     internal fun HomeScreen() {
         val screenModel = getScreenModel<HomeScreenModel>()
         val counter by screenModel.counter.collectAsState()
+        LaunchedEffect(Unit) {
+            screenModel.testCall()
+        }
         Surface {
             Box(
                 modifier = Modifier.fillMaxSize(),

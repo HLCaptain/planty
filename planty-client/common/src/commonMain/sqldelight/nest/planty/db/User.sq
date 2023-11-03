@@ -1,0 +1,3 @@
+CREATE TABLE User (
+    uuid TEXT PRIMARY KEY NOT NULL
+);

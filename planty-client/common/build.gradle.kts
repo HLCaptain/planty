@@ -39,10 +39,12 @@ kotlin {
                 api(project.dependencies.platform(libs.koin.bom))
                 api(libs.koin.core)
                 api(libs.koin.annotations)
-                implementation(libs.napier)
+                api(libs.napier)
                 implementation(libs.store)
+                implementation(libs.kotlinx.atomicfu)
                 implementation(libs.libres.compose)
                 implementation(libs.kotlinx.coroutines)
+                implementation(libs.sqldelight.coroutines)
             }
         }
 
@@ -59,6 +61,7 @@ kotlin {
                 implementation(libs.ktor.jvm)
                 implementation(libs.koin.android)
                 implementation(libs.koin.logger.slf4j)
+                implementation(libs.sqldelight.android)
             }
         }
 
@@ -69,12 +72,15 @@ kotlin {
                 implementation(libs.ktor.jvm)
                 implementation(libs.koin.ktor)
                 implementation(libs.koin.logger.slf4j)
+                implementation(libs.sqldelight.jvm)
             }
         }
 
         jsMain {
             dependencies {
                 implementation(compose.html.core)
+                implementation(libs.sqldelight.js)
+                implementation(devNpm("copy-webpack-plugin", "9.1.0"))
             }
         }
     }
@@ -117,6 +123,7 @@ sqldelight {
     databases {
         create("Database") {
             packageName.set("nest.planty.db")
+            generateAsync = true
         }
     }
 }

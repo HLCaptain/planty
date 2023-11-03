@@ -1,0 +1,4 @@
+CREATE TABLE Plant (
+    uuid TEXT PRIMARY KEY NOT NULL,
+    ownerUUID TEXT NOT NULL
+);

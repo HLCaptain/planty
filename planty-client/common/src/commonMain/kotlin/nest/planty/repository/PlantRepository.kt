@@ -1,10 +1,15 @@
 package nest.planty.repository
 
-import nest.planty.data.sqldelight.PlantDataSource
+import io.github.aakira.napier.Napier
+import nest.planty.data.disk.PlantDiskDataSource
 import org.koin.core.annotation.Factory
 
 @Factory
 class PlantRepository(
-    private val plantDataSource: PlantDataSource,
+    private val plantDiskDataSource: PlantDiskDataSource,
 ) {
+    fun testCall() {
+        Napier.d("Hello from PlantRepository")
+        plantDiskDataSource.testCall()
+    }
 }
