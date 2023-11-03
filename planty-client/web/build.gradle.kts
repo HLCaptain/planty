@@ -25,8 +25,3 @@ kotlin {
 compose.experimental {
     web.application {}
 }
-
-compose {
-//    kotlinCompilerPlugin.set("1.5.3")
-    kotlinCompilerPluginArgs.add("suppressKotlinVersionCompatibilityCheck=${libs.versions.kotlin}")
-}
