@@ -49,9 +49,6 @@ kotlin {
                 implementation(libs.kotlinx.serialization.json)
                 implementation(libs.libres.compose)
                 implementation(libs.sqldelight.coroutines)
-                implementation(libs.gitlive.firebase.common)
-                implementation(libs.gitlive.firebase.auth)
-                implementation(libs.gitlive.firebase.firestore)
             }
         }
 
@@ -100,6 +97,9 @@ kotlin {
 
 dependencies {
     add("kspCommonMainMetadata", libs.koin.ksp)
+    implementation(libs.gitlive.firebase.common)
+    implementation(libs.gitlive.firebase.auth)
+    implementation(libs.gitlive.firebase.firestore)
     implementation(project.dependencies.platform(libs.google.firebase.bom))
     implementation(libs.google.firebase.common)
     implementation(libs.google.firebase.auth)
