@@ -39,6 +39,7 @@ kotlin {
                 api(project.dependencies.platform(libs.koin.bom))
                 api(libs.koin.core)
                 api(libs.koin.annotations)
+                api(libs.koin.compose)
                 api(libs.napier)
                 implementation(libs.store)
                 implementation(libs.kotlinx.atomicfu)
@@ -79,8 +80,10 @@ kotlin {
         jsMain {
             dependencies {
                 implementation(compose.html.core)
+                implementation(libs.kotlinx.coroutines.js)
                 implementation(libs.sqldelight.js)
-                implementation(devNpm("copy-webpack-plugin", "9.1.0"))
+                implementation(npm("sql.js", "1.8.0"))
+                implementation(devNpm("copy-webpack-plugin", "11.0.0"))
             }
         }
     }
@@ -122,8 +125,9 @@ android {
 sqldelight {
     databases {
         create("Database") {
-            packageName.set("nest.planty.db")
+            packageName = "nest.planty.db"
             generateAsync = true
+//            deriveSchemaFromMigrations = true
         }
     }
 }

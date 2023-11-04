@@ -52,7 +52,13 @@ class HomeScreen : Screen {
                     Button(onClick = { screenModel.incrementCounter() }) {
                         Crossfade(targetState = counter != null) {
                             if (it) {
-                                Text(Res.string.clicked_x_times.format(counter!!, counter!!.toString()))
+                                Text(
+                                    if (counter == 0) {
+                                        Res.string.click_me
+                                    } else {
+                                        Res.string.clicked_x_times.format(counter!!, counter!!.toString())
+                                    }
+                                )
                             } else {
                                 CircularProgressIndicator()
                             }
