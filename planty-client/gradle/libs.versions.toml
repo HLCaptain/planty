@@ -69,6 +69,7 @@ libres-compose = { module = "io.github.skeptick.libres:libres-compose", version.
 kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-wasm = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-wasm", version = "coroutines" }
 kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "coroutines" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlinx-coroutines-js = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-js", version.ref = "coroutines" }
 kotlinx-serialization-wasm = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core-wasm", version = "1.5.2-wasm0" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }

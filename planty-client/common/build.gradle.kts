@@ -30,8 +30,8 @@ kotlin {
                 implementation(compose.materialIconsExtended)
                 implementation(compose.material3)
                 // FIXME: use compose resources for loading images in the future
-//                @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
-//                implementation(compose.components.resources)
+                @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+                implementation(compose.components.resources)
                 implementation(libs.voyager.navigator)
                 implementation(libs.voyager.bottomSheetNavigator)
                 implementation(libs.voyager.tabNavigator)
@@ -69,6 +69,7 @@ kotlin {
                 implementation(libs.koin.android)
                 implementation(libs.koin.logger.slf4j)
                 implementation(libs.sqldelight.android)
+                implementation(libs.kotlinx.coroutines.android)
             }
         }
 
@@ -88,7 +89,9 @@ kotlin {
                 implementation(compose.html.core)
                 implementation(libs.kotlinx.coroutines.js)
                 implementation(libs.sqldelight.js)
+                implementation(npm("kotlinx-coroutines-core", libs.versions.coroutines.get()))
                 implementation(npm("sql.js", "1.8.0"))
+                implementation(npm("@cashapp/sqldelight-sqljs-worker", libs.versions.sqldelight.get()))
                 implementation(devNpm("copy-webpack-plugin", "11.0.0"))
             }
         }
