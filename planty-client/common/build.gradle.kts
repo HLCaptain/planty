@@ -2,11 +2,13 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.sqldelight)
     alias(libs.plugins.libres)
     alias(libs.plugins.google.ksp)
+    alias(libs.plugins.google.services)
 }
 
 group = "nest"
@@ -22,30 +24,34 @@ kotlin {
         commonMain {
             kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
             dependencies {
-                api(compose.runtime)
-                api(compose.ui)
-                api(compose.foundation)
-                api(compose.materialIconsExtended)
-                api(compose.material3)
+                implementation(compose.runtime)
+                implementation(compose.ui)
+                implementation(compose.foundation)
+                implementation(compose.materialIconsExtended)
+                implementation(compose.material3)
                 // FIXME: use compose resources for loading images in the future
 //                @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
 //                implementation(compose.components.resources)
-                api(libs.voyager.navigator)
-                api(libs.voyager.bottomSheetNavigator)
-                api(libs.voyager.tabNavigator)
-                api(libs.voyager.transitions)
-                api(libs.voyager.koin)
+                implementation(libs.voyager.navigator)
+                implementation(libs.voyager.bottomSheetNavigator)
+                implementation(libs.voyager.tabNavigator)
+                implementation(libs.voyager.transitions)
+                implementation(libs.voyager.koin)
                 implementation(libs.ktor.core)
                 api(project.dependencies.platform(libs.koin.bom))
                 api(libs.koin.core)
-                api(libs.koin.annotations)
-                api(libs.koin.compose)
-                api(libs.napier)
+                implementation(libs.koin.annotations)
+                implementation(libs.koin.compose)
+                implementation(libs.napier)
                 implementation(libs.store)
                 implementation(libs.kotlinx.atomicfu)
-                implementation(libs.libres.compose)
                 implementation(libs.kotlinx.coroutines)
+                implementation(libs.kotlinx.serialization.json)
+                implementation(libs.libres.compose)
                 implementation(libs.sqldelight.coroutines)
+                implementation(libs.gitlive.firebase.common)
+                implementation(libs.gitlive.firebase.auth)
+                implementation(libs.gitlive.firebase.firestore)
             }
         }
 
@@ -91,6 +97,10 @@ kotlin {
 
 dependencies {
     add("kspCommonMainMetadata", libs.koin.ksp)
+    implementation(project.dependencies.platform(libs.google.firebase.bom))
+    implementation(libs.google.firebase.common)
+    implementation(libs.google.firebase.auth)
+    implementation(libs.google.firebase.firestore)
 }
 
 // WORKAROUND: ADD this dependsOn("kspCommonMainKotlinMetadata") instead of above dependencies
