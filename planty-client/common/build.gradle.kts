@@ -110,7 +110,6 @@ afterEvaluate {
 
 ksp {
     arg("KOIN_CONFIG_CHECK", "true")
-//    arg("KOIN_DEFAULT_MODULE", "false")
 }
 
 android {
@@ -127,7 +126,6 @@ sqldelight {
         create("Database") {
             packageName = "nest.planty.db"
             generateAsync = true
-//            deriveSchemaFromMigrations = true
         }
     }
 }
