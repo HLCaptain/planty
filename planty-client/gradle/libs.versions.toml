@@ -61,6 +61,7 @@ sqldelight-jvm = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "
 sqldelight-android = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
 sqldelight-js = { module = "app.cash.sqldelight:web-worker-driver", version.ref = "sqldelight" }
 sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
+sqldelight-adapters = { module = "app.cash.sqldelight:primitive-adapters", version.ref = "sqldelight" }
 
 libres-compose = { module = "io.github.skeptick.libres:libres-compose", version.ref = "libres" }
 napier = { module = "io.github.aakira:napier", version = "2.6.1" }

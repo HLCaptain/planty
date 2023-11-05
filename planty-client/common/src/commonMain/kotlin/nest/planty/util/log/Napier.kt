@@ -7,5 +7,5 @@ import io.github.aakira.napier.Napier
 fun initNapier() {
     Napier.takeLogarithm()
     Napier.base(DebugAntilog())
-    Napier.base(CrashlyticsAntilog())
+//    Napier.base(CrashlyticsAntilog())
 }

@@ -1,6 +1,7 @@
 package nest.planty.ui.home
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import nest.planty.Res
@@ -50,17 +52,22 @@ class HomeScreen : Screen {
 //                    )
                     Text(text = Res.string.hello_x.format(getPlatformName()))
                     Button(onClick = { screenModel.incrementCounter() }) {
-                        Crossfade(targetState = counter != null) {
-                            if (it) {
+                        Crossfade(
+                            modifier = Modifier.animateContentSize(),
+                            targetState = counter != null
+                        ) {
+                            if (it && counter != null) {
                                 Text(
                                     if (counter == 0) {
                                         Res.string.click_me
                                     } else {
-                                        Res.string.clicked_x_times.format(counter!!, counter!!.toString())
+                                        Res.string.clicked_x_times.format(counter!!, counter.toString())
                                     }
                                 )
                             } else {
-                                CircularProgressIndicator()
+                                CircularProgressIndicator(
+                                    strokeWidth = 2.dp
+                                )
                             }
                         }
                     }

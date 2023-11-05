@@ -34,7 +34,7 @@ class ClickSqlDelightDataSource(
             database -> database.clickQueries.getClicks()
         }.flatMapLatest { query ->
             query.asFlow().map {
-                val clickCount = it.awaitAsOne().toInt()
+                val clickCount = it.awaitAsOne().number
                 Napier.d("Click count is $clickCount")
                 clickCount
             }

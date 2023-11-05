@@ -8,7 +8,7 @@ plugins {
     alias(libs.plugins.sqldelight)
     alias(libs.plugins.libres)
     alias(libs.plugins.google.ksp)
-    alias(libs.plugins.google.services)
+//    alias(libs.plugins.google.services)
 }
 
 group = "nest"
@@ -49,6 +49,7 @@ kotlin {
                 implementation(libs.kotlinx.serialization.json)
                 implementation(libs.libres.compose)
                 implementation(libs.sqldelight.coroutines)
+                implementation(libs.sqldelight.adapters)
             }
         }
 
