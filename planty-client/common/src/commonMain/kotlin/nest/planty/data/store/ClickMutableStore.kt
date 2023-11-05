@@ -1,16 +1,13 @@
 package nest.planty.data.store
 
 import io.github.aakira.napier.Napier
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import nest.planty.data.sqldelight.DatabaseHelper
 import nest.planty.data.store.results.ClickUpdaterResult
 import nest.planty.db.Click
-import nest.planty.db.ClickBookkeeper
 import nest.planty.db.NetworkClick
 import nest.planty.di.NamedClickMutableStore
 import org.koin.core.annotation.Single
-import org.mobilenativefoundation.store.store5.Bookkeeper
 import org.mobilenativefoundation.store.store5.Converter
 import org.mobilenativefoundation.store.store5.ExperimentalStoreApi
 import org.mobilenativefoundation.store.store5.Fetcher
@@ -81,33 +78,5 @@ fun provideClickMutableStore(
             }
         )
     ),
-    bookkeeper = Bookkeeper.by(
-        getLastFailedSync = { key: String ->
-            databaseHelper.queryAsOneOrNullFlow { it.clickBookkeeperQueries.select(key) }.map {
-                Napier.d("Get last failed sync for $key is ${it?.timestamp}")
-                it?.timestamp
-            }.firstOrNull()
-        },
-        setLastFailedSync = { key, timestamp ->
-            databaseHelper.withDatabase {
-                Napier.d("Setting last failed sync for $key to $timestamp")
-                it.clickBookkeeperQueries.upsert(ClickBookkeeper(key, timestamp))
-            }
-            true
-        },
-        clear = { key ->
-            databaseHelper.withDatabase {
-                Napier.d("Clearing last failed sync for $key")
-                it.clickBookkeeperQueries.delete(key)
-            }
-            true
-        },
-        clearAll = {
-            databaseHelper.withDatabase {
-                Napier.d("Clearing all last failed syncs")
-                it.clickBookkeeperQueries.deleteAll()
-            }
-            true
-        }
-    )
+    bookkeeper = provideBookkeeper(databaseHelper, Click::class.simpleName.toString())
 )

@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.map
 import nest.planty.data.sqldelight.DatabaseHelper
 import nest.planty.db.Click
 import nest.planty.db.NetworkClick
+import nest.planty.db.Plant
 import nest.planty.di.NamedPlantMutableStore
 import org.koin.core.annotation.Single
 import org.mobilenativefoundation.store.store5.Converter
@@ -77,5 +78,5 @@ fun providePlantMutableStore(
             }
         )
     ),
-    bookkeeper = provideBookkeeper(databaseHelper, Click::class.simpleName.toString())
+    bookkeeper = provideBookkeeper(databaseHelper, Plant::class.simpleName.toString())
 )
