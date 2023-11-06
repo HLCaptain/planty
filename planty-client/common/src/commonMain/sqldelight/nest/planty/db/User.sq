@@ -1,0 +1,12 @@
+CREATE TABLE User (
+    uuid TEXT PRIMARY KEY NOT NULL UNIQUE
+);
+
+insertUser:
+INSERT INTO User (uuid) VALUES (?);
+
+deleteUser:
+DELETE FROM User WHERE uuid = ?;
+
+deleteAllUsers:
+DELETE FROM User;

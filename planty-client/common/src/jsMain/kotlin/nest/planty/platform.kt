@@ -1,13 +1,7 @@
 package nest.planty
 
-import androidx.compose.runtime.Composable
-import nest.planty.App
-
 actual fun getPlatformName(): String {
-    return "demo"
+    return "Web"
 }
 
-@Composable
-fun UIShow() {
-    App()
-}
+actual interface JavaSerializable

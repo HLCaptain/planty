@@ -1,0 +1,17 @@
+CREATE TABLE Plant (
+    uuid TEXT PRIMARY KEY NOT NULL UNIQUE,
+    ownerUUID TEXT NOT NULL
+);
+
+getPlantsForUser:
+SELECT * FROM Plant WHERE ownerUUID = ?;
+
+createNewPlantForUser:
+INSERT INTO Plant (uuid, ownerUUID)
+VALUES (?, ?);
+
+deletePlantForUser:
+DELETE FROM Plant WHERE uuid = ? AND ownerUUID = ?;
+
+deleteAllPlantsForUser:
+DELETE FROM Plant WHERE ownerUUID = ?;

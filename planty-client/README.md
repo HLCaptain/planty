@@ -40,7 +40,27 @@ The project is organized into several modules (or packages):
 - `repo`: contains `Repositories`.
   - `model`: contains the data models, independent from `DataSource` class implementations.
 - `manager`: contains `Manager` classes.
-- `di`: contains dependency injection related classes, like `Module.kt` containing the factories for dependency injections in case of `Koin`.
+- `di`: contains dependency injection related classes, like `AppModule.kt` and `PlatformModule.kt` containing the factories for dependency injections in case of `Koin`. Other classes may contain submodules for dependency injection.
 - `util`: additional classes that are used across the project.
 
 This structure can be altered if needed, but it is recommended to keep it as simple as possible. Singleton-like classes (`Activity` in case of Android, or `Main` in case of Desktop can be placed in the root of the package).
+
+## Development
+
+Few things to keep in mind when developing the project.
+
+Have your JDK compatible with 17 version. If using Android Studio (recommended for development) you can download and set it there. This is required to build.
+
+It is recommended to enable `Settings` -> `Experimental` -> `Configure all Gradle tasks during Gradle Sync` inside Android Studio to help you figure out what task can you run. This way, you can easily run your desired `run` or `build` task from the `Gradle` tab.
+
+### Android
+
+Have your Android SDK installed and set up. You can download it from Android Studio. Your emulator should support API 21 (Android 5.0 Lollipop) or higher.
+
+### JVM
+
+Desktop app is based on Java Swing under the hood.
+
+### Web
+
+When changing dependencies, run `./gradlew kotlinUpgradeYarnLock` to update the `yarn.lock` file. Android Studio will throw a compile time error prompting the user to run this command if dependencies are out of date.

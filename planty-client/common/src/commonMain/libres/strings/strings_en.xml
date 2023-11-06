@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <string name="app_name">MR</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="hello_x">Hello ${name}!</string>
+    <plurals name="clicked_x_times">
+        <item quantity="one">Clicked ${clickNumber} time!</item>
+        <item quantity="other">Clicked ${clickNumber} times!</item>
+    </plurals>
+    <string name="click_me">Click me!</string>
+    <string name="reset_clicks">Reset clicks</string>
+</resources>

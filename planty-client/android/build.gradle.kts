@@ -1,7 +1,8 @@
 plugins {
-    id("org.jetbrains.compose")
-    id("com.android.application")
-    kotlin("android")
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.google.ksp)
 }
 
 group = "nest"
@@ -21,23 +22,33 @@ android {
         versionCode = 1
         versionName = "1.0-SNAPSHOT"
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
-    }
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
         }
+    }
+    applicationVariants.all {
+        val variantName = name
+        sourceSets {
+            getByName("main") {
+                java.srcDir(File("build/generated/ksp/$variantName/kotlin"))
+            }
+        }
+    }
+    kotlin {
+        jvmToolchain(17)
     }
 }
 
 dependencies {
     implementation(project(":common"))
     implementation(libs.androidx.activity.compose)
+
+    implementation(platform(libs.koin.bom))
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
+    ksp(libs.koin.ksp)
 }
 
 tasks.register("BuildAndRun") {

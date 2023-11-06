@@ -1,0 +1,30 @@
+import kotlin.Int;
+
+-- Mimicing a network click counter
+
+CREATE TABLE NetworkClick (
+    uuid TEXT PRIMARY KEY NOT NULL,
+    number INTEGER AS Int NOT NULL
+);
+
+INSERT INTO NetworkClick
+VALUES ("test", 0);
+
+-- CRUD for NetworkClick
+
+select:
+SELECT *
+FROM NetworkClick
+WHERE uuid = ?
+LIMIT 1;
+
+upsert:
+INSERT OR REPLACE INTO NetworkClick
+VALUES ?;
+
+delete:
+DELETE FROM NetworkClick
+WHERE uuid = ?;
+
+deleteAll:
+DELETE FROM NetworkClick;

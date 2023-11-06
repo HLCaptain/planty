@@ -1,0 +1,47 @@
+import kotlin.Int;
+
+CREATE TABLE Click (
+    uuid TEXT PRIMARY KEY NOT NULL,
+    number INTEGER AS Int NOT NULL
+);
+
+INSERT INTO Click
+VALUES ("test", 0);
+
+incrementClicks:
+UPDATE Click
+SET number = number + 1
+WHERE uuid = "test";
+
+getClicks:
+SELECT *
+FROM Click
+WHERE uuid = "test";
+
+resetClicks:
+UPDATE Click
+SET number = 0
+WHERE uuid = "test";
+
+-- CRUD for Click
+
+select:
+SELECT *
+FROM Click
+WHERE uuid = ?
+LIMIT 1;
+
+selectAll:
+SELECT *
+FROM Click;
+
+upsert:
+INSERT OR REPLACE INTO Click
+VALUES ?;
+
+delete:
+DELETE FROM Click
+WHERE uuid = ?;
+
+deleteAll:
+DELETE FROM Click;
