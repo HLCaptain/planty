@@ -57,9 +57,25 @@ It is recommended to enable `Settings` -> `Experimental` -> `Configure all Gradl
 
 Have your Android SDK installed and set up. You can download it from Android Studio. Your emulator should support API 21 (Android 5.0 Lollipop) or higher.
 
-### JVM
+### Desktop
 
-Desktop app is based on Java Swing under the hood.
+Desktop app is based on Java Swing under the hood. Due to a [dependency issue](https://github.com/adrielcafe/voyager/issues/147) related to [Voyager](https://github.com/adrielcafe/voyager), all `Coroutine` calls must be dispatched explicitly with a `CoroutineDispatcher`. Otherwise, the desktop app will crash.
+
+#### Bad
+
+```kotlin
+screenModelScope.launch {
+    clickManager.incrementClickCount()
+}
+```
+
+#### Good
+
+```kotlin
+screenModelScope.launch(dispatcherIO) {
+    clickManager.incrementClickCount()
+}
+```
 
 ### Web
 

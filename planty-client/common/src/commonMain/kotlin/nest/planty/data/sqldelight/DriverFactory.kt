@@ -6,6 +6,7 @@ import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.db.SqlSchema
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -31,7 +32,7 @@ private suspend fun createDatabase(): Database {
 }
 
 @Single
-fun provideDatabaseFlow(@NamedCoroutineScopeIO coroutineScopeIO: CoroutineScope): StateFlow<Database?> {
+fun provideDatabaseFlow(coroutineScopeIO: CoroutineScope): StateFlow<Database?> {
     val stateFlow = MutableStateFlow<Database?>(null)
     coroutineScopeIO.launch {
         createDatabase().apply { stateFlow.update { this } }

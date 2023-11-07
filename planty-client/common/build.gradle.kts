@@ -50,6 +50,9 @@ kotlin {
                 implementation(libs.libres.compose)
                 implementation(libs.sqldelight.coroutines)
                 implementation(libs.sqldelight.adapters)
+                implementation(libs.gitlive.firebase.common)
+                implementation(libs.gitlive.firebase.auth)
+                implementation(libs.gitlive.firebase.firestore)
             }
         }
 
@@ -98,13 +101,10 @@ kotlin {
 
 dependencies {
     add("kspCommonMainMetadata", libs.koin.ksp)
-    implementation(libs.gitlive.firebase.common)
-    implementation(libs.gitlive.firebase.auth)
-    implementation(libs.gitlive.firebase.firestore)
     implementation(project.dependencies.platform(libs.google.firebase.bom))
     implementation(libs.google.firebase.common)
-    implementation(libs.google.firebase.auth)
-    implementation(libs.google.firebase.firestore)
+//    implementation(libs.google.firebase.auth)
+//    implementation(libs.google.firebase.firestore)
 }
 
 // WORKAROUND: ADD this dependsOn("kspCommonMainKotlinMetadata") instead of above dependencies
