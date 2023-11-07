@@ -31,9 +31,6 @@ class HomeScreen : Screen {
     internal fun HomeScreen() {
         val screenModel = getScreenModel<HomeScreenModel>()
         val counter by screenModel.counter.collectAsState()
-        LaunchedEffect(Unit) {
-            screenModel.testCall()
-        }
         Surface {
             Box(
                 modifier = Modifier.fillMaxSize(),
@@ -73,6 +70,25 @@ class HomeScreen : Screen {
                     }
                     Button(onClick = { screenModel.resetCounter() }) {
                         Text(Res.string.reset_clicks)
+                    }
+                    val isUserSignedIn by screenModel.isUserSignedIn.collectAsState()
+                    Button(onClick = {
+                        if (isUserSignedIn) {
+                            screenModel.signOut()
+                        } else {
+                            screenModel.signInAnonymously()
+                        }
+                    }) {
+                        Crossfade(
+                            modifier = Modifier.animateContentSize(),
+                            targetState = isUserSignedIn
+                        ) {
+                            if (it) {
+                                Text(Res.string.sign_out)
+                            } else {
+                                Text(Res.string.sign_in_anonymously)
+                            }
+                        }
                     }
                 }
             }

@@ -1,6 +1,8 @@
 package nest.planty
 
 import android.app.Application
+import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.initialize
 import nest.planty.util.log.initNapier
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -15,8 +17,10 @@ class MainApplication : Application() {
 
         startKoin {
             androidLogger()
-            androidContext(this@MainApplication)
+            androidContext(applicationContext)
             defaultModule()
         }
+
+        Firebase.initialize(applicationContext)
     }
 }

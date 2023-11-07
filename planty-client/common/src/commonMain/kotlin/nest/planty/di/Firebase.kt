@@ -1,7 +1,12 @@
 package nest.planty.di
 
-//@Single
-//fun provideFirebaseAuth() = Firebase.auth
+import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.auth.auth
+import dev.gitlive.firebase.firestore.firestore
+import org.koin.core.annotation.Single
 
-//@Single
-//fun provideFirebaseFirestore() = Firebase.firestore
+@Single
+fun provideFirebaseAuth() = Firebase.auth
+
+@Single
+fun provideFirebaseFirestore() = Firebase.firestore

@@ -4,25 +4,35 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import nest.planty.di.NamedCoroutineDispatcherDefault
 import nest.planty.di.NamedCoroutineDispatcherIO
-import nest.planty.di.NamedCoroutineDispatcherMain
+import nest.planty.manager.AuthManager
 import nest.planty.manager.ClickManager
 import org.koin.core.annotation.Factory
 
 @Factory
 class HomeScreenModel(
-//    private val plantManager: PlantManager,
+    private val authManager: AuthManager,
     private val clickManager: ClickManager,
     @NamedCoroutineDispatcherIO private val dispatcherIO: CoroutineDispatcher,
 ) : ScreenModel {
     val counter = clickManager.clickCount.stateIn(screenModelScope, SharingStarted.Eagerly, null)
+    val userEmail = authManager.signedInUser.map { it?.email }.stateIn(screenModelScope, SharingStarted.Eagerly, null)
+    val userUUID = authManager.signedInUser.map { it?.uid }.stateIn(screenModelScope, SharingStarted.Eagerly, null)
+    val isUserSignedIn = authManager.isUserSignedIn.stateIn(screenModelScope, SharingStarted.Eagerly, false)
 
-    fun testCall() {
-//        Napier.d("Hello from HomeScreenModel")
-//        plantManager.testCall()
+    fun signInAnonymously() {
+        screenModelScope.launch(dispatcherIO) {
+            authManager.signInAnonymously()
+        }
+    }
+
+    fun signOut() {
+        screenModelScope.launch(dispatcherIO) {
+            authManager.signOut()
+        }
     }
 
     fun incrementCounter() {
