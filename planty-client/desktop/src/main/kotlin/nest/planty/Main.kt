@@ -5,7 +5,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import com.google.firebase.FirebasePlatform
 import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.FirebaseOptions
+import dev.gitlive.firebase.firestore.firestore
 import dev.gitlive.firebase.initialize
 import io.github.aakira.napier.Napier
 import nest.planty.data.firebase.getDesktopFirebaseOptions
@@ -24,6 +24,7 @@ fun main() = application {
 
 fun initFirebase() {
     initFirebasePlatform()
+    initFirebaseFirestore()
     Firebase.initialize(
         context = Context(),
         options = getDesktopFirebaseOptions()
@@ -39,4 +40,11 @@ fun initFirebasePlatform() {
         override fun clear(key: String) { storage.remove(key) }
         override fun log(msg: String) = Napier.d(msg)
     })
+}
+
+fun initFirebaseFirestore() {
+    Firebase.firestore.setSettings(
+        persistenceEnabled = false,
+        sslEnabled = false,
+    )
 }

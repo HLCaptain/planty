@@ -2,6 +2,7 @@ package nest.planty.data.store
 
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.map
+import nest.planty.data.firebase.datasource.PlantFirestoreDataSource
 import nest.planty.data.sqldelight.DatabaseHelper
 import nest.planty.db.Click
 import nest.planty.db.NetworkClick
@@ -21,7 +22,8 @@ import org.mobilenativefoundation.store.store5.UpdaterResult
 @Single
 @NamedPlantMutableStore
 fun providePlantMutableStore(
-    databaseHelper: DatabaseHelper
+    databaseHelper: DatabaseHelper,
+    plantFirestoreDataSource: PlantFirestoreDataSource
 ) = MutableStoreBuilder.from(
     fetcher = Fetcher.ofFlow { key ->
         databaseHelper.queryAsOneFlow { it.networkClickQueries.select(key) }.map {

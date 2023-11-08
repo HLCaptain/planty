@@ -1,6 +1,5 @@
 package nest.planty.manager
 
-import dev.gitlive.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.map
 import nest.planty.repository.UserRepository
 import org.koin.core.annotation.Single
