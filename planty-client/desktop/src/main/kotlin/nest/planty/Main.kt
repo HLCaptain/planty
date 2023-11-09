@@ -24,11 +24,11 @@ fun main() = application {
 
 fun initFirebase() {
     initFirebasePlatform()
-    initFirebaseFirestore()
     Firebase.initialize(
         context = Context(),
         options = getDesktopFirebaseOptions()
     )
+    initFirebaseFirestore()
 }
 
 fun initFirebasePlatform() {
@@ -45,6 +45,6 @@ fun initFirebasePlatform() {
 fun initFirebaseFirestore() {
     Firebase.firestore.setSettings(
         persistenceEnabled = false,
-        sslEnabled = false,
+//        sslEnabled = false,
     )
 }

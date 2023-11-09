@@ -9,19 +9,28 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import nest.planty.di.NamedCoroutineDispatcherIO
 import nest.planty.manager.AuthManager
-import nest.planty.manager.ClickManager
+import nest.planty.manager.PlantManager
 import org.koin.core.annotation.Factory
 
 @Factory
 class HomeScreenModel(
     private val authManager: AuthManager,
-    private val clickManager: ClickManager,
+    private val plantManager: PlantManager,
     @NamedCoroutineDispatcherIO private val dispatcherIO: CoroutineDispatcher,
 ) : ScreenModel {
-    val counter = clickManager.clickCount.stateIn(screenModelScope, SharingStarted.Eagerly, null)
-    val userEmail = authManager.signedInUser.map { it?.email }.stateIn(screenModelScope, SharingStarted.Eagerly, null)
-    val userUUID = authManager.signedInUser.map { it?.uid }.stateIn(screenModelScope, SharingStarted.Eagerly, null)
-    val isUserSignedIn = authManager.isUserSignedIn.stateIn(screenModelScope, SharingStarted.Eagerly, false)
+    val plants = plantManager.plantsByUser
+        .map { it ?: emptyList() }
+        .stateIn(
+            screenModelScope,
+            SharingStarted.Eagerly,
+            emptyList()
+        )
+    val isUserSignedIn = authManager.isUserSignedIn
+        .stateIn(
+            screenModelScope,
+            SharingStarted.Eagerly,
+            false
+        )
 
     fun signInAnonymously() {
         screenModelScope.launch(dispatcherIO) {
@@ -35,17 +44,18 @@ class HomeScreenModel(
         }
     }
 
-    fun incrementCounter() {
-        // DispatcherIO (or at least not the default Dispatcher) must be used on Desktop due to dependency issues
-        // https://github.com/adrielcafe/voyager/issues/147#issuecomment-1717612820
+    fun addPlant(
+        name: String,
+        description: String,
+    ) {
         screenModelScope.launch(dispatcherIO) {
-            clickManager.incrementClickCount()
+            plantManager.addPlant(name, description)
         }
     }
 
-    fun resetCounter() {
+    fun deletePlant(uuid: String) {
         screenModelScope.launch(dispatcherIO) {
-            clickManager.resetClickCount()
+            plantManager.deletePlant(uuid)
         }
     }
 }

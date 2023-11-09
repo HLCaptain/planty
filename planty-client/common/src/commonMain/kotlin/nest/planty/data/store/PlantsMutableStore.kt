@@ -8,7 +8,7 @@ import nest.planty.data.mapping.toLocalModel
 import nest.planty.data.mapping.toNetworkModel
 import nest.planty.data.sqldelight.DatabaseHelper
 import nest.planty.db.Plant
-import nest.planty.di.NamedPlantMutableStore
+import nest.planty.di.NamedPlantsMutableStore
 import org.koin.core.annotation.Single
 import org.mobilenativefoundation.store.store5.Converter
 import org.mobilenativefoundation.store.store5.ExperimentalStoreApi
@@ -20,7 +20,7 @@ import org.mobilenativefoundation.store.store5.Updater
 import org.mobilenativefoundation.store.store5.UpdaterResult
 
 /**
- * Provides a [MutableStore] for [Plant]s.
+ * Provides a [MutableStore] for [Plant]s by authenticated user.
  * @param databaseHelper The [DatabaseHelper] to use for local storage.
  * @param plantFirestoreDataSource The [PlantFirestoreDataSource] to use for remote storage.
  * @return A [MutableStore] for [Plant]s.
@@ -28,25 +28,27 @@ import org.mobilenativefoundation.store.store5.UpdaterResult
  */
 @OptIn(ExperimentalStoreApi::class)
 @Single
-@NamedPlantMutableStore
-fun providePlantMutableStore(
+@NamedPlantsMutableStore
+fun providePlantsMutableStore(
     databaseHelper: DatabaseHelper,
     plantFirestoreDataSource: PlantFirestoreDataSource,
 ) = MutableStoreBuilder.from(
     fetcher = Fetcher.ofFlow { key ->
-        plantFirestoreDataSource.fetch(uuid = key)
+        plantFirestoreDataSource.fetchByUser(userUUID = key)
     },
     sourceOfTruth = SourceOfTruth.of(
         reader = { key: String ->
-            databaseHelper.queryAsOneFlow { it.plantQueries.select(key) }.map {
-                Napier.d("User $key has the plant")
+            databaseHelper.queryAsListFlow { it.plantQueries.getPlantsForUser(key) }.map {
+                Napier.d("User $key has ${it.size} plants")
                 it
             }
         },
         writer = { key, local ->
             databaseHelper.withDatabase { db ->
-                Napier.d("Writing plant at $key with $local")
-                db.plantQueries.insert(local)
+                local.forEach {
+                    Napier.d("Writing plant at $key with $it")
+                    db.plantQueries.insert(it)
+                }
             }
         },
         delete = { key ->
@@ -62,14 +64,28 @@ fun providePlantMutableStore(
             }
         }
     ),
-    converter = Converter.Builder<FirestorePlant, Plant, Plant>()
+    converter = Converter.Builder<List<FirestorePlant>, List<Plant>, List<Plant>>()
         .fromOutputToLocal { it }
-        .fromNetworkToLocal { it.toLocalModel() }
+        .fromNetworkToLocal { network ->
+            network.map { plant ->
+                Plant(
+                    uuid = plant.uuid,
+                    ownerUUID = plant.ownerUUID,
+                    name = plant.name,
+                    description = plant.description,
+                    desiredEnvironment = plant.desiredEnvironment,
+                    sensorEvents = plant.sensorEvents.map { it.toLocalModel() },
+                    sensors = plant.sensors,
+                    brokers = plant.brokers,
+                    image = plant.image,
+                )
+            }
+        }
         .build(),
 ).build(
     updater = Updater.by(
         post = { _, output ->
-            plantFirestoreDataSource.upsert(output.toNetworkModel())
+            output.map { plantFirestoreDataSource.upsert(it.toNetworkModel()) }
             UpdaterResult.Success.Typed(output)
         },
         onCompletion = OnUpdaterCompletion(
@@ -81,5 +97,5 @@ fun providePlantMutableStore(
             }
         )
     ),
-    bookkeeper = provideBookkeeper(databaseHelper, Plant::class.simpleName.toString())
+    bookkeeper = provideBookkeeper(databaseHelper, Plant::class.simpleName.toString() + "List")
 )

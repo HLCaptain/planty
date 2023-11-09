@@ -1,4 +1,3 @@
-import com.github.gmazzo.gradle.plugins.BuildConfigSourceSet
 import org.jetbrains.compose.internal.utils.localPropertiesFile
 import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 
@@ -55,6 +54,7 @@ kotlin {
                 api(libs.gitlive.firebase.common)
                 api(libs.gitlive.firebase.auth)
                 api(libs.gitlive.firebase.firestore)
+                implementation(libs.uuid)
             }
         }
 

@@ -13,4 +13,11 @@
     <string name="sign_in_with_google">Sign in with Google</string>
     <string name="sign_out">Sign out</string>
     <string name="loading">Loading</string>
+    <string name="plant_no_name">No name</string>
+    <string name="plant_no_description">No description</string>
+    <string name="name">Name</string>
+    <string name="description">Description</string>
+    <string name="empty_plant_list">No plants</string>
+    <string name="add_plant">Add plant</string>
+    <string name="remove_plant">Remove plant</string>
 </resources>

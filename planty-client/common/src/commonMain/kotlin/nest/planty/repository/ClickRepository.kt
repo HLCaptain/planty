@@ -20,7 +20,6 @@ class ClickRepository (
     @NamedCoroutineDispatcherIO private val dispatcherIO: CoroutineDispatcher,
     @NamedClickMutableStore private val clickMutableStore: MutableStore<String, Int>
 ) {
-    @OptIn(ExperimentalStoreApi::class)
     suspend fun incrementClickCount(key: String = "test") {
         val currentClickCount = clickCount.firstOrNull() ?: 0
         Napier.d("Incrementing click count of $currentClickCount")
@@ -32,7 +31,6 @@ class ClickRepository (
         )
     }
 
-    @OptIn(ExperimentalStoreApi::class)
     suspend fun resetClickCount(key: String = "test") {
         clickMutableStore.write(
             StoreWriteRequest.of(
@@ -42,7 +40,6 @@ class ClickRepository (
         )
     }
 
-    @OptIn(ExperimentalStoreApi::class)
     val clickCount = clickMutableStore.stream<StoreReadResponse<Int>>(
         StoreReadRequest.cached(
             key = "test",
