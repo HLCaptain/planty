@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -40,6 +41,7 @@ class HomeScreen : Screen {
     internal fun HomeScreen() {
         val screenModel = getScreenModel<HomeScreenModel>()
         val plants by screenModel.plants.collectAsState()
+        val counter by screenModel.counter.collectAsState()
         Surface {
             Box(
                 modifier = Modifier.fillMaxSize(),
@@ -57,6 +59,30 @@ class HomeScreen : Screen {
 //                        contentDescription = "flower image"
 //                    )
                     Text(text = Res.string.hello_x.format(getPlatformName()))
+
+                    Button(onClick = { screenModel.incrementCounter() }) {
+                        Crossfade(
+                            modifier = Modifier.animateContentSize(),
+                            targetState = counter != null
+                        ) {
+                            if (it && counter != null) {
+                                Text(
+                                    if (counter == 0) {
+                                        Res.string.click_me
+                                    } else {
+                                        Res.string.clicked_x_times.format(counter!!, counter.toString())
+                                    }
+                                )
+                            } else {
+                                CircularProgressIndicator(
+                                    strokeWidth = 2.dp
+                                )
+                            }
+                        }
+                    }
+                    Button(onClick = { screenModel.resetCounter() }) {
+                        Text(Res.string.reset_clicks)
+                    }
 
                     AnimatedVisibility(
                         modifier = Modifier.animateContentSize(),

@@ -1,14 +1,13 @@
 package nest.planty.data.store
 
 import io.github.aakira.napier.Napier
-import kotlinx.coroutines.flow.map
 import nest.planty.data.firestore.datasource.PlantFirestoreDataSource
 import nest.planty.data.firestore.model.FirestorePlant
 import nest.planty.data.mapping.toLocalModel
 import nest.planty.data.mapping.toNetworkModel
 import nest.planty.data.sqldelight.DatabaseHelper
 import nest.planty.db.Plant
-import nest.planty.di.NamedPlantsMutableStore
+import nest.planty.di.NamedPlantMutableStore
 import org.koin.core.annotation.Single
 import org.mobilenativefoundation.store.store5.Converter
 import org.mobilenativefoundation.store.store5.ExperimentalStoreApi
@@ -20,7 +19,7 @@ import org.mobilenativefoundation.store.store5.Updater
 import org.mobilenativefoundation.store.store5.UpdaterResult
 
 /**
- * Provides a [MutableStore] for [Plant]s by authenticated user.
+ * Provides a [MutableStore] for [Plant]s.
  * @param databaseHelper The [DatabaseHelper] to use for local storage.
  * @param plantFirestoreDataSource The [PlantFirestoreDataSource] to use for remote storage.
  * @return A [MutableStore] for [Plant]s.
@@ -28,33 +27,41 @@ import org.mobilenativefoundation.store.store5.UpdaterResult
  */
 @OptIn(ExperimentalStoreApi::class)
 @Single
-@NamedPlantsMutableStore
-fun providePlantsMutableStore(
+class PlantMutableStoreBuilder(
+    databaseHelper: DatabaseHelper,
+    plantFirestoreDataSource: PlantFirestoreDataSource,
+) {
+    val store = providePlantMutableStore(databaseHelper, plantFirestoreDataSource)
+}
+
+@OptIn(ExperimentalStoreApi::class)
+@Single
+@NamedPlantMutableStore
+fun providePlantMutableStore(
     databaseHelper: DatabaseHelper,
     plantFirestoreDataSource: PlantFirestoreDataSource,
 ) = MutableStoreBuilder.from(
     fetcher = Fetcher.ofFlow { key ->
-        plantFirestoreDataSource.fetchByUser(userUUID = key)
+        Napier.d("Fetching plant with key $key")
+        plantFirestoreDataSource.fetch(uuid = key)
     },
     sourceOfTruth = SourceOfTruth.of(
         reader = { key: String ->
-            databaseHelper.queryAsListFlow { it.plantQueries.getPlantsForUser(key) }.map {
-                Napier.d("User $key has ${it.size} plants")
-                it
+            databaseHelper.queryAsOneFlow {
+                Napier.d("User $key has the plant")
+                it.plantQueries.select(key)
             }
         },
         writer = { key, local ->
             databaseHelper.withDatabase { db ->
-                local.forEach {
-                    Napier.d("Writing plant at $key with $it")
-                    db.plantQueries.insert(it)
-                }
+                Napier.d("Writing plant at $key with $local")
+                db.plantQueries.insert(local)
             }
         },
         delete = { key ->
             databaseHelper.withDatabase {
                 Napier.d("Deleting plant at $key")
-                it.plantQueries.deleteAllPlantsForUser(key)
+                it.plantQueries.delete(key)
             }
         },
         deleteAll = {
@@ -64,28 +71,15 @@ fun providePlantsMutableStore(
             }
         }
     ),
-    converter = Converter.Builder<List<FirestorePlant>, List<Plant>, List<Plant>>()
+    converter = Converter.Builder<FirestorePlant, Plant, Plant>()
         .fromOutputToLocal { it }
-        .fromNetworkToLocal { network ->
-            network.map { plant ->
-                Plant(
-                    uuid = plant.uuid,
-                    ownerUUID = plant.ownerUUID,
-                    name = plant.name,
-                    description = plant.description,
-                    desiredEnvironment = plant.desiredEnvironment,
-                    sensorEvents = plant.sensorEvents.map { it.toLocalModel() },
-                    sensors = plant.sensors,
-                    brokers = plant.brokers,
-                    image = plant.image,
-                )
-            }
-        }
+        .fromNetworkToLocal { it.toLocalModel() }
         .build(),
 ).build(
     updater = Updater.by(
         post = { _, output ->
-            output.map { plantFirestoreDataSource.upsert(it.toNetworkModel()) }
+            Napier.d("Upserting plant with $output")
+            plantFirestoreDataSource.upsert(output.toNetworkModel())
             UpdaterResult.Success.Typed(output)
         },
         onCompletion = OnUpdaterCompletion(
@@ -97,5 +91,5 @@ fun providePlantsMutableStore(
             }
         )
     ),
-    bookkeeper = provideBookkeeper(databaseHelper, Plant::class.simpleName.toString() + "List")
+    bookkeeper = provideBookkeeper(databaseHelper, Plant::class.simpleName.toString())
 )

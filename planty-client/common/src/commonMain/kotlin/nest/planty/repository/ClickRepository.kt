@@ -5,11 +5,11 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import nest.planty.data.store.ClickMutableStoreBuilder
 import nest.planty.di.NamedClickMutableStore
 import nest.planty.di.NamedCoroutineDispatcherIO
 import org.koin.core.annotation.Factory
 import org.mobilenativefoundation.store.store5.ExperimentalStoreApi
-import org.mobilenativefoundation.store.store5.MutableStore
 import org.mobilenativefoundation.store.store5.StoreReadRequest
 import org.mobilenativefoundation.store.store5.StoreReadResponse
 import org.mobilenativefoundation.store.store5.StoreWriteRequest
@@ -18,8 +18,9 @@ import org.mobilenativefoundation.store.store5.StoreWriteRequest
 @Factory
 class ClickRepository (
     @NamedCoroutineDispatcherIO private val dispatcherIO: CoroutineDispatcher,
-    @NamedClickMutableStore private val clickMutableStore: MutableStore<String, Int>
+    @NamedClickMutableStore private val clickMutableStoreBuilder: ClickMutableStoreBuilder
 ) {
+    private val clickMutableStore = clickMutableStoreBuilder.store
     suspend fun incrementClickCount(key: String = "test") {
         val currentClickCount = clickCount.firstOrNull() ?: 0
         Napier.d("Incrementing click count of $currentClickCount")

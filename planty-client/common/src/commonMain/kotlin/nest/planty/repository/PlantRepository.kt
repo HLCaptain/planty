@@ -4,13 +4,12 @@ import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import nest.planty.data.store.PlantMutableStoreBuilder
+import nest.planty.data.store.PlantsMutableStoreBuilder
 import nest.planty.db.Plant
 import nest.planty.di.NamedCoroutineDispatcherIO
-import nest.planty.di.NamedPlantMutableStore
-import nest.planty.di.NamedPlantsMutableStore
 import org.koin.core.annotation.Factory
 import org.mobilenativefoundation.store.store5.ExperimentalStoreApi
-import org.mobilenativefoundation.store.store5.MutableStore
 import org.mobilenativefoundation.store.store5.StoreReadRequest
 import org.mobilenativefoundation.store.store5.StoreReadResponse
 import org.mobilenativefoundation.store.store5.StoreWriteRequest
@@ -18,10 +17,12 @@ import org.mobilenativefoundation.store.store5.StoreWriteRequest
 @OptIn(ExperimentalStoreApi::class)
 @Factory
 class PlantRepository(
-    @NamedPlantMutableStore private val plantMutableStore: MutableStore<String, Plant>,
-    @NamedPlantsMutableStore private val plantsMutableStore: MutableStore<String, List<Plant>>,
+    plantMutableStoreBuilder: PlantMutableStoreBuilder,
+    plantsMutableStoreBuilder: PlantsMutableStoreBuilder,
     @NamedCoroutineDispatcherIO private val dispatcherIO: CoroutineDispatcher
 ) {
+    private val plantMutableStore = plantMutableStoreBuilder.store
+    private val plantsMutableStore = plantsMutableStoreBuilder.store
     suspend fun addPlantForUser(plant: Plant) {
         plantMutableStore.write(
             StoreWriteRequest.of(

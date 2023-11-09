@@ -19,6 +19,12 @@ import org.mobilenativefoundation.store.store5.UpdaterResult
 
 @OptIn(ExperimentalStoreApi::class)
 @Single
+class ClickMutableStoreBuilder(databaseHelper: DatabaseHelper) {
+    val store = provideClickMutableStore(databaseHelper)
+}
+
+@OptIn(ExperimentalStoreApi::class)
+@Single
 @NamedClickMutableStore
 fun provideClickMutableStore(
     databaseHelper: DatabaseHelper
