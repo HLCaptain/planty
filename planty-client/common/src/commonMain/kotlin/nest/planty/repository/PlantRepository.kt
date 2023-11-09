@@ -8,7 +8,6 @@ import nest.planty.db.Plant
 import nest.planty.di.NamedCoroutineDispatcherIO
 import nest.planty.di.NamedPlantMutableStore
 import nest.planty.di.NamedPlantsMutableStore
-import nest.planty.manager.AuthManager
 import org.koin.core.annotation.Factory
 import org.mobilenativefoundation.store.store5.ExperimentalStoreApi
 import org.mobilenativefoundation.store.store5.MutableStore
@@ -19,7 +18,6 @@ import org.mobilenativefoundation.store.store5.StoreWriteRequest
 @OptIn(ExperimentalStoreApi::class)
 @Factory
 class PlantRepository(
-    private val authManager: AuthManager,
     @NamedPlantMutableStore private val plantMutableStore: MutableStore<String, Plant>,
     @NamedPlantsMutableStore private val plantsMutableStore: MutableStore<String, List<Plant>>,
     @NamedCoroutineDispatcherIO private val dispatcherIO: CoroutineDispatcher

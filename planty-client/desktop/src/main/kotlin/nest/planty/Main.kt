@@ -4,8 +4,9 @@ import android.content.Context
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import com.google.firebase.FirebasePlatform
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
 import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.firestore.firestore
 import dev.gitlive.firebase.initialize
 import io.github.aakira.napier.Napier
 import nest.planty.data.firebase.getDesktopFirebaseOptions
@@ -43,8 +44,9 @@ fun initFirebasePlatform() {
 }
 
 fun initFirebaseFirestore() {
-    Firebase.firestore.setSettings(
-        persistenceEnabled = false,
-//        sslEnabled = false,
-    )
+    val settings = FirebaseFirestoreSettings.Builder()
+        .setPersistenceEnabled(false)
+        .setSslEnabled(false)
+        .build()
+    FirebaseFirestore.getInstance().firestoreSettings = settings
 }

@@ -23,8 +23,8 @@ class PlantManager(
         plantBrokers: List<String> = emptyList(),
         plantImage: String? = null,
     ) {
-        Napier.d("Adding plant for user")
         val user = authManager.signedInUser.firstOrNull() ?: DomainUser.LocalUser
+        Napier.d("Adding plant for user")
         plantRepository.addPlantForUser(
             Plant(
                 uuid = randomUUID(),

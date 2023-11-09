@@ -1,7 +1,6 @@
 package nest.planty.data.store
 
 import io.github.aakira.napier.Napier
-import kotlinx.coroutines.flow.map
 import nest.planty.data.firestore.datasource.PlantFirestoreDataSource
 import nest.planty.data.firestore.model.FirestorePlant
 import nest.planty.data.mapping.toLocalModel
@@ -34,13 +33,14 @@ fun providePlantMutableStore(
     plantFirestoreDataSource: PlantFirestoreDataSource,
 ) = MutableStoreBuilder.from(
     fetcher = Fetcher.ofFlow { key ->
+        Napier.d("Fetching plant with key $key")
         plantFirestoreDataSource.fetch(uuid = key)
     },
     sourceOfTruth = SourceOfTruth.of(
         reader = { key: String ->
-            databaseHelper.queryAsOneFlow { it.plantQueries.select(key) }.map {
+            databaseHelper.queryAsOneFlow {
                 Napier.d("User $key has the plant")
-                it
+                it.plantQueries.select(key)
             }
         },
         writer = { key, local ->
@@ -52,7 +52,7 @@ fun providePlantMutableStore(
         delete = { key ->
             databaseHelper.withDatabase {
                 Napier.d("Deleting plant at $key")
-                it.plantQueries.deleteAllPlantsForUser(key)
+                it.plantQueries.delete(key)
             }
         },
         deleteAll = {
@@ -69,6 +69,7 @@ fun providePlantMutableStore(
 ).build(
     updater = Updater.by(
         post = { _, output ->
+            Napier.d("Upserting plant with $output")
             plantFirestoreDataSource.upsert(output.toNetworkModel())
             UpdaterResult.Success.Typed(output)
         },
