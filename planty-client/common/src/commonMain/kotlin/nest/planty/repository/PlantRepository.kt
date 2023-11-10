@@ -47,6 +47,7 @@ class PlantRepository(
                 refresh = true
             )
         ).map {
+            Napier.d("Read Response: $it")
             val dataOrNull = it.dataOrNull()
             Napier.d("Plants are $dataOrNull")
             dataOrNull

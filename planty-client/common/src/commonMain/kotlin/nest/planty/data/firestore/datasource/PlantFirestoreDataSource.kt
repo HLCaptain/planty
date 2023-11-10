@@ -20,7 +20,11 @@ class PlantFirestoreDataSource(
             .collection(FirestorePlant.COLLECTION_NAME)
             .where(FirestorePlant.FIELD_OWNER_UUID, equalTo = userUUID)
             .snapshots()
-            .map { snapshot -> snapshot.documents.map { it.data() } }
+            .map { snapshot -> snapshot.documents.map {
+                val data = it.data(FirestorePlant.serializer())
+                Napier.d("Fetched plant $data")
+                data
+            } }
     }
 
     override suspend fun upsert(plant: FirestorePlant) {
@@ -50,7 +54,7 @@ class PlantFirestoreDataSource(
         return firestore.collection(FirestorePlant.COLLECTION_NAME)
             .document(uuid)
             .snapshots()
-            .map { it.data() }
+            .map { it.data(FirestorePlant.serializer()) }
     }
 
     override suspend fun delete(uuid: String) {

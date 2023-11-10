@@ -1,5 +1,6 @@
 package nest.planty.data.store
 
+import dev.gitlive.firebase.firebaseSerializer
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.map
 import nest.planty.data.firestore.datasource.PlantFirestoreDataSource
@@ -35,6 +36,7 @@ class PlantsMutableStoreBuilder(
     val store = providePlantsMutableStore(databaseHelper, plantFirestoreDataSource)
 }
 
+@OptIn(ExperimentalStoreApi::class)
 @NamedPlantsMutableStore
 fun providePlantsMutableStore(
     databaseHelper: DatabaseHelper,
@@ -73,21 +75,7 @@ fun providePlantsMutableStore(
     ),
     converter = Converter.Builder<List<FirestorePlant>, List<Plant>, List<Plant>>()
         .fromOutputToLocal { it }
-        .fromNetworkToLocal { network ->
-            network.map { plant ->
-                Plant(
-                    uuid = plant.uuid,
-                    ownerUUID = plant.ownerUUID,
-                    name = plant.name,
-                    description = plant.description,
-                    desiredEnvironment = plant.desiredEnvironment,
-                    sensorEvents = plant.sensorEvents.map { it.toLocalModel() },
-                    sensors = plant.sensors,
-                    brokers = plant.brokers,
-                    image = plant.image,
-                )
-            }
-        }
+        .fromNetworkToLocal { network -> network.map { it.toLocalModel() } }
         .build(),
 ).build(
     updater = Updater.by(
