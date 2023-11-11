@@ -5,6 +5,7 @@ import nest.planty.data.model.SensorEvent
 
 val mapAdapter = object : ColumnAdapter<Map<String, String>, String> {
     override fun decode(databaseValue: String): Map<String, String> {
+        if (databaseValue.isEmpty()) return emptyMap()
         return databaseValue.split(",").associate {
             val (key, value) = it.split("=")
             key to value
@@ -18,6 +19,7 @@ val mapAdapter = object : ColumnAdapter<Map<String, String>, String> {
 
 val listAdapter = object : ColumnAdapter<List<String>, String> {
     override fun decode(databaseValue: String): List<String> {
+        if (databaseValue.isEmpty()) return emptyList()
         return databaseValue.split(",")
     }
 
@@ -28,6 +30,7 @@ val listAdapter = object : ColumnAdapter<List<String>, String> {
 
 val sensorEventAdapter = object : ColumnAdapter<List<SensorEvent>, String> {
     override fun decode(databaseValue: String): List<SensorEvent> {
+        if (databaseValue.isEmpty()) return emptyList()
         return databaseValue.split(",").map {
             val (type, timestamp, value) = it.split("=")
             SensorEvent(type, timestamp.toLong(), value)

@@ -1,12 +1,15 @@
 package nest.planty.data.sqldelight
 
 import app.cash.sqldelight.Query
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import nest.planty.db.Database
+import nest.planty.di.NamedCoroutineDispatcherIO
 import nest.planty.di.flatMapLatestAsList
 import nest.planty.di.flatMapLatestAsOne
 import nest.planty.di.flatMapLatestAsOneOrNull
@@ -15,7 +18,8 @@ import org.koin.core.annotation.Single
 // Modified from: https://github.com/cashapp/sqldelight/blob/master/sample-web/src/jsMain/kotlin/com/example/sqldelight/hockey/data/DbHelper.kt
 @Single
 class DatabaseHelper(
-    private val databaseFlow: StateFlow<Database?>
+    private val databaseFlow: StateFlow<Database?>,
+    @NamedCoroutineDispatcherIO private val dispatcherIO: CoroutineDispatcher,
 ) {
     private val mutex = Mutex()
 
@@ -33,7 +37,7 @@ class DatabaseHelper(
         mutex.withLock {
             emit(block(databaseFlow.first { it != null }!!))
         }
-    }
+    }.flowOn(dispatcherIO)
 
     fun<T : Any> queryAsOneFlow(block: suspend (Database) -> Query<T>) = withDatabaseResult(block).flatMapLatestAsOne()
     fun<T : Any> queryAsOneOrNullFlow(block: suspend (Database) -> Query<T>) = withDatabaseResult(block).flatMapLatestAsOneOrNull()

@@ -7,7 +7,7 @@ interface PlantNetworkDataSource {
     fun fetchByUser(userUUID: String): Flow<List<FirestorePlant>>
     fun fetch(uuid: String): Flow<FirestorePlant>
     suspend fun upsert(plant: FirestorePlant)
-    suspend fun delete(plant: FirestorePlant)
+    suspend fun delete(plant: FirestorePlant): Flow<Unit>
     suspend fun deleteAll(userUUID: String)
     suspend fun delete(uuid: String)
 }

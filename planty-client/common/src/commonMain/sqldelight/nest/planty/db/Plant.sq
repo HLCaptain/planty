@@ -21,8 +21,8 @@ SELECT * FROM Plant WHERE uuid = ?;
 getPlantsForUser:
 SELECT * FROM Plant WHERE ownerUUID = ?;
 
-insert:
-INSERT INTO Plant
+upsert:
+INSERT OR REPLACE INTO Plant
 VALUES ?;
 
 delete:

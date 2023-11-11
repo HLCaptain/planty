@@ -84,5 +84,8 @@ fun provideClickMutableStore(
             }
         )
     ),
-    bookkeeper = provideBookkeeper(databaseHelper, Click::class.simpleName.toString())
+    bookkeeper = provideBookkeeper(
+        databaseHelper,
+        Click::class.simpleName.toString()
+    ) { it }
 )

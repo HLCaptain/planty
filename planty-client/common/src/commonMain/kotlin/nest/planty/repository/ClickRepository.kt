@@ -47,8 +47,9 @@ class ClickRepository (
             refresh = true
         )
     ).map {
-        val dataOrNull = it.dataOrNull()
-        Napier.d("Click count is $dataOrNull")
-        dataOrNull
+        it.throwIfError()
+        val data = it.dataOrNull()
+        Napier.d("Click count is $data")
+        data
     }.flowOn(dispatcherIO)
 }

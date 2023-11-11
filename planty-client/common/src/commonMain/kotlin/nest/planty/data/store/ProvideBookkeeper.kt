@@ -7,12 +7,13 @@ import nest.planty.data.sqldelight.DatabaseHelper
 import nest.planty.db.DataHistory
 import org.mobilenativefoundation.store.store5.Bookkeeper
 
-fun provideBookkeeper(
+fun<Key> provideBookkeeper(
     databaseHelper: DatabaseHelper,
-    originTable: String
+    originTable: String,
+    keyToUUID: (Key) -> String
 ) = Bookkeeper.by(
-    getLastFailedSync = { key: String ->
-        databaseHelper.queryAsOneOrNullFlow { it.dataHistoryQueries.select(key) }.map {
+    getLastFailedSync = { key: Key ->
+        databaseHelper.queryAsOneOrNullFlow { it.dataHistoryQueries.select(keyToUUID(key)) }.map {
             Napier.d("Get last failed sync for $key is ${it?.timestamp}")
             it?.timestamp
         }.firstOrNull()
@@ -20,14 +21,14 @@ fun provideBookkeeper(
     setLastFailedSync = { key, timestamp ->
         databaseHelper.withDatabase {
             Napier.d("Setting last failed sync for $key to $timestamp")
-            it.dataHistoryQueries.upsert(DataHistory(key, timestamp, originTable))
+            it.dataHistoryQueries.upsert(DataHistory(keyToUUID(key), timestamp, originTable))
         }
         true
     },
     clear = { key ->
         databaseHelper.withDatabase {
             Napier.d("Clearing last failed sync for $key")
-            it.dataHistoryQueries.delete(key)
+            it.dataHistoryQueries.delete(keyToUUID(key))
         }
         true
     },

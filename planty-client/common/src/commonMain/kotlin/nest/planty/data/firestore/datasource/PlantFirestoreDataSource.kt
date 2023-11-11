@@ -34,11 +34,15 @@ class PlantFirestoreDataSource(
             .set(plant)
     }
 
-    override suspend fun delete(plant: FirestorePlant) {
+    override suspend fun delete(plant: FirestorePlant): Flow<Unit> {
         Napier.d("Deleting plant $plant")
-        firestore.collection(FirestorePlant.COLLECTION_NAME)
-            .document(plant.uuid)
-            .delete()
+        return firestore.collection(FirestorePlant.COLLECTION_NAME)
+            .where(FirestorePlant.FIELD_UUID, equalTo = plant.uuid)
+            .snapshots()
+            .map { snapshot ->
+                Napier.d("Deleting plant $plant for real")
+                snapshot.documents.forEach { it.reference.delete() }
+            }
     }
 
     override suspend fun deleteAll(userUUID: String) {

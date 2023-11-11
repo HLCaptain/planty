@@ -1,6 +1,5 @@
 package nest.planty.data.store
 
-import dev.gitlive.firebase.firebaseSerializer
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.map
 import nest.planty.data.firestore.datasource.PlantFirestoreDataSource
@@ -29,41 +28,49 @@ import org.mobilenativefoundation.store.store5.UpdaterResult
  */
 @OptIn(ExperimentalStoreApi::class)
 @Single
-class PlantsMutableStoreBuilder(
+class PlantsByUserMutableStoreBuilder(
     databaseHelper: DatabaseHelper,
     plantFirestoreDataSource: PlantFirestoreDataSource,
 ) {
-    val store = providePlantsMutableStore(databaseHelper, plantFirestoreDataSource)
+    val store = providePlantsByUserMutableStore(databaseHelper, plantFirestoreDataSource)
 }
 
 @OptIn(ExperimentalStoreApi::class)
 @NamedPlantsMutableStore
-fun providePlantsMutableStore(
+fun providePlantsByUserMutableStore(
     databaseHelper: DatabaseHelper,
     plantFirestoreDataSource: PlantFirestoreDataSource,
 ) = MutableStoreBuilder.from(
     fetcher = Fetcher.ofFlow { key ->
-        plantFirestoreDataSource.fetchByUser(userUUID = key)
+        require(key is PlantsByUserKey.Read)
+        plantFirestoreDataSource.fetchByUser(userUUID = key.userUUID)
     },
     sourceOfTruth = SourceOfTruth.of(
-        reader = { key: String ->
-            databaseHelper.queryAsListFlow { it.plantQueries.getPlantsForUser(key) }.map {
+        reader = { key: PlantsByUserKey ->
+            require(key is PlantsByUserKey.Read)
+            databaseHelper.queryAsListFlow {
+                Napier.d("Reading plants for user $key")
+                it.plantQueries.getPlantsForUser(key.userUUID)
+            }.map {
                 Napier.d("User $key has ${it.size} plants")
                 it
             }
         },
         writer = { key, local ->
             databaseHelper.withDatabase { db ->
-                local.forEach {
-                    Napier.d("Writing plant at $key with $it")
-                    db.plantQueries.insert(it)
+                db.plantQueries.transaction {
+                    local.forEach {
+                        Napier.d("Writing plant at $key with $it")
+                        db.plantQueries.upsert(it)
+                    }
                 }
             }
         },
         delete = { key ->
+            require(key is PlantsByUserKey.Clear)
             databaseHelper.withDatabase {
                 Napier.d("Deleting plant at $key")
-                it.plantQueries.deleteAllPlantsForUser(key)
+                it.plantQueries.deleteAllPlantsForUser(key.userUUID)
             }
         },
         deleteAll = {
@@ -79,8 +86,18 @@ fun providePlantsMutableStore(
         .build(),
 ).build(
     updater = Updater.by(
-        post = { _, output ->
-            output.map { plantFirestoreDataSource.upsert(it.toNetworkModel()) }
+        post = { key, output ->
+            when (key) {
+                is PlantsByUserKey.Write -> {
+                    Napier.d("Upserting plants with $output")
+                    output.forEach { plantFirestoreDataSource.upsert(it.toNetworkModel()) }
+                }
+                is PlantsByUserKey.Clear -> {
+                    Napier.d("Deleting plants with $output")
+                    output.forEach { plantFirestoreDataSource.delete(it.toNetworkModel()) }
+                }
+                else -> Napier.e("Not updating key $key")
+            }
             UpdaterResult.Success.Typed(output)
         },
         onCompletion = OnUpdaterCompletion(
@@ -92,5 +109,14 @@ fun providePlantsMutableStore(
             }
         )
     ),
-    bookkeeper = provideBookkeeper(databaseHelper, Plant::class.simpleName.toString() + "List")
+    bookkeeper = provideBookkeeper(
+        databaseHelper,
+        Plant::class.simpleName.toString() + "List"
+    ) {
+        when (it) {
+            is PlantsByUserKey.Read -> it.userUUID
+            is PlantsByUserKey.Clear -> it.userUUID
+            is PlantsByUserKey.Write -> it.userUUID
+        }
+    }
 )
