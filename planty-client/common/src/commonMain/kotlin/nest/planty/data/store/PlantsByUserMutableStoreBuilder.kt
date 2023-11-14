@@ -64,6 +64,9 @@ fun providePlantsByUserMutableStore(
                         db.plantQueries.upsert(it)
                     }
                 }
+                local.firstOrNull()?.let {
+                    plantFirestoreDataSource.deleteAll(userUUID = it.ownerUUID)
+                }
             }
         },
         delete = { key ->

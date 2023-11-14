@@ -3,6 +3,7 @@ package nest.planty.manager
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
@@ -55,6 +56,6 @@ class PlantManager(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val plantsByUser = authManager.signedInUser.flatMapLatest { user ->
-        plantRepository.getPlantsByUser(user?.uuid ?: DomainUser.LocalUser.uuid)
+        user?.uuid?.let { plantRepository.getPlantsByUser(it) } ?: emptyFlow()
     }.flowOn(dispatcherIO)
 }

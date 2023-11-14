@@ -73,6 +73,7 @@ fun providePlantMutableStore(
                         Napier.d("Clear plant at $key")
                         db.plantQueries.delete(key.uuid)
                     }
+                    plantFirestoreDataSource.delete(key.uuid)
                 }
                 else -> Napier.e("Not writing key $key")
             }
