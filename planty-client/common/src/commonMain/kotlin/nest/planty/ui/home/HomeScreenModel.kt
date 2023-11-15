@@ -35,11 +35,7 @@ class HomeScreenModel(
         )
     val counter = clickManager.clickCount.stateIn(screenModelScope, SharingStarted.Eagerly, null)
 
-    fun signInAnonymously() {
-        screenModelScope.launch(dispatcherIO) {
-            authManager.signInAnonymously()
-        }
-    }
+
 
     fun signOut() {
         screenModelScope.launch(dispatcherIO) {

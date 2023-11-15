@@ -3,6 +3,7 @@ package nest.planty.ui.home
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,6 +31,8 @@ import cafe.adriel.voyager.koin.getScreenModel
 import nest.planty.Res
 import nest.planty.db.Plant
 import nest.planty.getPlatformName
+import nest.planty.ui.dialog.PlantyDialog
+import nest.planty.ui.profile.ProfileDialogScreen
 
 class HomeScreen : Screen {
     @Composable
@@ -47,7 +50,10 @@ class HomeScreen : Screen {
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                Column {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     // Libres implementation:
 //                    Image(
 //                        painter = Res.image.flower_image.painterResource(),
@@ -100,26 +106,18 @@ class HomeScreen : Screen {
                         }
                     }
 
-                    val isUserSignedIn by screenModel.isUserSignedIn.collectAsState()
-                    Button(onClick = {
-                        if (isUserSignedIn) {
-                            screenModel.signOut()
-                        } else {
-                            screenModel.signInAnonymously()
-                        }
-                    }) {
-                        Crossfade(
-                            modifier = Modifier.animateContentSize(),
-                            targetState = isUserSignedIn
-                        ) {
-                            if (it) {
-                                Text(Res.string.sign_out)
-                            } else {
-                                Text(Res.string.sign_in_anonymously)
-                            }
-                        }
+                    var isProfileDialogShowing by rememberSaveable { mutableStateOf(false) }
+                    PlantyDialog(
+                        startScreen = ProfileDialogScreen(),
+                        isDialogOpen = isProfileDialogShowing,
+                        onDialogClosed = { isProfileDialogShowing = false }
+                    )
+
+                    Button(onClick = { isProfileDialogShowing = true }) {
+                        Text(Res.string.profile)
                     }
 
+                    val isUserSignedIn by screenModel.isUserSignedIn.collectAsState()
                     AnimatedVisibility(
                         visible = isUserSignedIn
                     ) {

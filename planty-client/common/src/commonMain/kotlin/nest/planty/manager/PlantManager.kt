@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import nest.planty.db.Plant
 import nest.planty.di.NamedCoroutineDispatcherIO
-import nest.planty.domain.model.DomainUser
 import nest.planty.repository.PlantRepository
 import nest.planty.util.log.randomUUID
 import org.koin.core.annotation.Factory
@@ -28,12 +27,12 @@ class PlantManager(
         plantBrokers: List<String> = emptyList(),
         plantImage: String? = null,
     ) {
-        val user = authManager.signedInUser.firstOrNull() ?: DomainUser.LocalUser
+        val user = authManager.signedInUser.firstOrNull() ?: return
         Napier.d("Adding plant for user")
         plantRepository.addPlantForUser(
             Plant(
                 uuid = randomUUID(),
-                ownerUUID = user.uuid,
+                ownerUUID = user.uid,
                 name = plantName,
                 description = plantDescription,
                 desiredEnvironment = plantDesiredEnvironment,
@@ -50,12 +49,14 @@ class PlantManager(
     }
 
     suspend fun deletePlantsForUser() {
-        val user = authManager.signedInUser.firstOrNull() ?: DomainUser.LocalUser
-        plantRepository.deletePlantsForUser(user.uuid)
+        authManager.signedInUser.firstOrNull()?.let {
+            plantRepository.deletePlantsForUser(it.uid)
+        }
+
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val plantsByUser = authManager.signedInUser.flatMapLatest { user ->
-        user?.uuid?.let { plantRepository.getPlantsByUser(it) } ?: emptyFlow()
+        user?.uid?.let { plantRepository.getPlantsByUser(it) } ?: emptyFlow()
     }.flowOn(dispatcherIO)
 }
