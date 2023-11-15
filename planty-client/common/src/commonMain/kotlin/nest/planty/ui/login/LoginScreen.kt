@@ -16,6 +16,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,7 +51,9 @@ fun LoginDialogScreen(
     LoginDialogContent(
         modifier = Modifier.fillMaxWidth(),
         isUserSigningIn = isUserSigningIn,
-        signInAnonymously = screenModel::signInAnonymously
+        signInAnonymously = screenModel::signInAnonymously,
+        signInWithEmailAndPassword = screenModel::signInWithEmailAndPassword,
+        signUpWithEmailAndPassword = screenModel::signUpWithEmailAndPassword,
     )
 }
 
@@ -59,27 +62,39 @@ fun LoginDialogContent(
     modifier: Modifier = Modifier,
     isUserSigningIn: Boolean = false,
     signInAnonymously: () -> Unit = {},
+    signInWithEmailAndPassword: (email: String, password: String) -> Unit = { _, _ -> },
+    signUpWithEmailAndPassword: (email: String, password: String) -> Unit = { _, _ -> },
 ) {
     Crossfade(
         modifier = modifier,
         targetState = isUserSigningIn,
         label = "Login Dialog Content"
-    ) {
-        if (it) {
+    ) { userSignedIn ->
+        if (userSignedIn) {
             PlantyDialogContent(
                 text = { LoadingIndicator() },
                 textPaddingValues = PaddingValues()
             )
         } else {
+            var email by rememberSaveable { mutableStateOf("") }
+            var password by rememberSaveable { mutableStateOf("") }
             PlantyDialogContent(
                 title = { LoginTitle() },
                 text = {
                     LoginScreen(
                         modifier = Modifier.fillMaxWidth(),
-                        signInAnonymously = signInAnonymously
+                        signInAnonymously = signInAnonymously,
+                        emailChanged = { email = it },
+                        passwordChanged = { password = it },
                     )
                 },
-                buttons = { LoginButtons(modifier = Modifier.fillMaxWidth()) },
+                buttons = {
+                    LoginButtons(
+                        modifier = Modifier.fillMaxWidth(),
+                        signInWithEmailAndPassword = { signInWithEmailAndPassword(email, password) },
+                        signUpWithEmailAndPassword = { signUpWithEmailAndPassword(email, password) },
+                    )
+                },
                 containerColor = Color.Transparent,
             )
         }
@@ -95,6 +110,8 @@ fun LoginTitle() {
 fun LoginScreen(
     modifier: Modifier = Modifier,
     signInAnonymously: () -> Unit = {},
+    emailChanged: (String) -> Unit = {},
+    passwordChanged: (String) -> Unit = {},
 ) {
     Column(
         modifier = modifier,
@@ -114,9 +131,10 @@ fun LoginScreen(
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = email,
-            enabled = false,
+            enabled = true,
             onValueChange = {
                 email = it
+                emailChanged(it)
             },
             label = {
                 Text(text = Res.string.email)
@@ -126,9 +144,10 @@ fun LoginScreen(
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = password,
-            enabled = false,
+            enabled = true,
             onValueChange = {
                 password = it
+                passwordChanged(it)
             },
             label = {
                 Text(text = Res.string.password)
@@ -139,7 +158,9 @@ fun LoginScreen(
 
 @Composable
 fun LoginButtons(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    signInWithEmailAndPassword: () -> Unit = {},
+    signUpWithEmailAndPassword: () -> Unit = {},
 ) {
     val onDialogClosed = LocalDialogDismissRequest.current
     Row(
@@ -152,12 +173,16 @@ fun LoginButtons(
             Text(text = Res.string.cancel)
         }
         Button(
-            onClick = {
-                // TODO: Login via email/password
-            },
-            enabled = false,
+            onClick = signInWithEmailAndPassword,
+            enabled = true,
         ) {
             Text(text = Res.string.login)
+        }
+        Button(
+            onClick = signUpWithEmailAndPassword,
+            enabled = true,
+        ) {
+            Text(text = Res.string.sign_up)
         }
     }
 }

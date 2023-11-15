@@ -50,4 +50,18 @@ class LoginScreenModel(
             authManager.signInAnonymously()
         }
     }
+
+    fun signInWithEmailAndPassword(email: String, password: String) {
+        screenModelScope.launch(dispatcherIO) {
+            authManager.signInWithEmailAndPassword(email, password)
+        }
+    }
+
+    fun signUpWithEmailAndPassword(email: String, password: String) {
+        screenModelScope.launch(dispatcherIO) {
+            if (authManager.createUserWithEmailAndPassword(email, password)) {
+                authManager.signInWithEmailAndPassword(email, password)
+            }
+        }
+    }
 }

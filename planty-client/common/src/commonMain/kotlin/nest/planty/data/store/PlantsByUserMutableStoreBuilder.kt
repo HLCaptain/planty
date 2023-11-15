@@ -42,15 +42,13 @@ fun providePlantsByUserMutableStore(
     plantFirestoreDataSource: PlantFirestoreDataSource,
 ) = MutableStoreBuilder.from(
     fetcher = Fetcher.ofFlow { key ->
-        require(key is PlantsByUserKey.Read)
-        plantFirestoreDataSource.fetchByUser(userUUID = key.userUUID)
+        plantFirestoreDataSource.fetchByUser(userUUID = key)
     },
     sourceOfTruth = SourceOfTruth.of(
-        reader = { key: PlantsByUserKey ->
-            require(key is PlantsByUserKey.Read)
+        reader = { key: String ->
             databaseHelper.queryAsListFlow {
                 Napier.d("Reading plants for user $key")
-                it.plantQueries.getPlantsForUser(key.userUUID)
+                it.plantQueries.getPlantsForUser(key)
             }.map {
                 Napier.d("User $key has ${it.size} plants")
                 it
@@ -64,17 +62,15 @@ fun providePlantsByUserMutableStore(
                         db.plantQueries.upsert(it)
                     }
                 }
-                local.firstOrNull()?.let {
-                    plantFirestoreDataSource.deleteAll(userUUID = it.ownerUUID)
-                }
+                local.forEach { plantFirestoreDataSource.upsert(it.toNetworkModel()) }
             }
         },
         delete = { key ->
-            require(key is PlantsByUserKey.Clear)
             databaseHelper.withDatabase {
                 Napier.d("Deleting plant at $key")
-                it.plantQueries.deleteAllPlantsForUser(key.userUUID)
+                it.plantQueries.deleteAllPlantsForUser(key)
             }
+            plantFirestoreDataSource.deleteAll(userUUID = key)
         },
         deleteAll = {
             databaseHelper.withDatabase {
@@ -90,17 +86,7 @@ fun providePlantsByUserMutableStore(
 ).build(
     updater = Updater.by(
         post = { key, output ->
-            when (key) {
-                is PlantsByUserKey.Write -> {
-                    Napier.d("Upserting plants with $output")
-                    output.forEach { plantFirestoreDataSource.upsert(it.toNetworkModel()) }
-                }
-                is PlantsByUserKey.Clear -> {
-                    Napier.d("Deleting plants with $output")
-                    output.forEach { plantFirestoreDataSource.delete(it.toNetworkModel()) }
-                }
-                else -> Napier.e("Not updating key $key")
-            }
+            output.forEach { plantFirestoreDataSource.upsert(it.toNetworkModel()) }
             UpdaterResult.Success.Typed(output)
         },
         onCompletion = OnUpdaterCompletion(
@@ -115,11 +101,5 @@ fun providePlantsByUserMutableStore(
     bookkeeper = provideBookkeeper(
         databaseHelper,
         Plant::class.simpleName.toString() + "List"
-    ) {
-        when (it) {
-            is PlantsByUserKey.Read -> it.userUUID
-            is PlantsByUserKey.Clear -> it.userUUID
-            is PlantsByUserKey.Write -> it.userUUID
-        }
-    }
+    ) { it }
 )

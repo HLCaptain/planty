@@ -26,8 +26,8 @@ class UserRepository(
         auth.signInWithEmailAndPassword(email, password)
     }
 
-    suspend fun createUserWithEmailAndPassword(email: String, password: String) {
-        auth.createUserWithEmailAndPassword(email, password)
+    suspend fun createUserWithEmailAndPassword(email: String, password: String): Boolean {
+        return auth.createUserWithEmailAndPassword(email, password).user != null
     }
 
     suspend fun sendPasswordResetEmail(email: String) {

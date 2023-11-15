@@ -2,8 +2,6 @@ package nest.planty.data.store
 
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOn
 import nest.planty.data.firestore.datasource.PlantFirestoreDataSource
 import nest.planty.data.firestore.model.FirestorePlant
 import nest.planty.data.mapping.toLocalModel
@@ -48,42 +46,29 @@ fun providePlantMutableStore(
     dispatcher: CoroutineDispatcher,
 ) = MutableStoreBuilder.from(
     fetcher = Fetcher.ofFlow { key ->
-        require(key is PlantKey.Read)
         Napier.d("Fetching plant with key $key")
-        plantFirestoreDataSource.fetch(uuid = key.uuid)
+        plantFirestoreDataSource.fetch(uuid = key)
     },
     sourceOfTruth = SourceOfTruth.of(
-        reader = { key: PlantKey ->
-            require(key is PlantKey.Read)
+        reader = { key: String ->
             databaseHelper.queryAsOneFlow {
                 Napier.d("User $key has the plant")
-                it.plantQueries.select(key.uuid)
+                it.plantQueries.select(key)
             }
         },
         writer = { key, local ->
-            when (key) {
-                is PlantKey.Write -> {
-                    databaseHelper.withDatabase { db ->
-                        Napier.d("Writing plant at $key with $local")
-                        db.plantQueries.upsert(local)
-                    }
-                }
-                is PlantKey.Clear -> {
-                    databaseHelper.withDatabase { db ->
-                        Napier.d("Clear plant at $key")
-                        db.plantQueries.delete(key.uuid)
-                    }
-                    plantFirestoreDataSource.delete(key.uuid)
-                }
-                else -> Napier.e("Not writing key $key")
+            databaseHelper.withDatabase { db ->
+                Napier.d("Writing plant at $key with $local")
+                db.plantQueries.upsert(local)
             }
+            plantFirestoreDataSource.upsert(local.toNetworkModel())
         },
         delete = { key ->
-            require(key is PlantKey.Clear)
             databaseHelper.withDatabase {
                 Napier.d("Deleting plant at $key")
-                it.plantQueries.delete(key.uuid)
+                it.plantQueries.delete(key)
             }
+            plantFirestoreDataSource.delete(key)
         },
         deleteAll = {
             databaseHelper.withDatabase {
@@ -99,17 +84,7 @@ fun providePlantMutableStore(
 ).build(
     updater = Updater.by(
         post = { key, output ->
-            when (key) {
-                is PlantKey.Write -> {
-                    Napier.d("Upserting plant with $output")
-                    plantFirestoreDataSource.upsert(output.toNetworkModel())
-                }
-                is PlantKey.Clear -> {
-                    Napier.d("Clearing plant with $output")
-                    plantFirestoreDataSource.delete(output.toNetworkModel()).flowOn(dispatcher).first()
-                }
-                else -> Napier.e("Not updating key $key")
-            }
+            plantFirestoreDataSource.upsert(output.toNetworkModel())
             UpdaterResult.Success.Typed(output)
         },
         onCompletion = OnUpdaterCompletion(
@@ -124,11 +99,5 @@ fun providePlantMutableStore(
     bookkeeper = provideBookkeeper(
         databaseHelper,
         Plant::class.simpleName.toString()
-    ) {
-        when (it) {
-            is PlantKey.Read -> it.uuid
-            is PlantKey.Clear -> it.uuid
-            is PlantKey.Write -> it.uuid
-        }
-    }
+    ) { it }
 )

@@ -46,7 +46,7 @@ fun initFirebasePlatform() {
 fun initFirebaseFirestore() {
     val settings = FirebaseFirestoreSettings.Builder()
         .setPersistenceEnabled(false)
-        .setSslEnabled(false)
+//        .setSslEnabled(false)
         .build()
     FirebaseFirestore.getInstance().firestoreSettings = settings
 }
