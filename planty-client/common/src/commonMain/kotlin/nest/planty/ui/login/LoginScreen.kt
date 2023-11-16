@@ -36,25 +36,25 @@ class LoginScreen : Screen {
             screenModel = getScreenModel<LoginScreenModel>()
         )
     }
-}
 
-@Composable
-fun LoginDialogScreen(
-    screenModel: LoginScreenModel,
-) {
-    val isUserSignedIn by screenModel.isUserSignedIn.collectAsState()
-    val isUserSigningIn by screenModel.isSigningIn.collectAsState()
-    val dismissDialog = LocalDialogDismissRequest.current
-    LaunchedEffect(isUserSignedIn) {
-        if (isUserSignedIn) dismissDialog()
+    @Composable
+    fun LoginDialogScreen(
+        screenModel: LoginScreenModel,
+    ) {
+        val isUserSignedIn by screenModel.isUserSignedIn.collectAsState()
+        val isUserSigningIn by screenModel.isSigningIn.collectAsState()
+        val dismissDialog = LocalDialogDismissRequest.current
+        LaunchedEffect(isUserSignedIn) {
+            if (isUserSignedIn) dismissDialog()
+        }
+        LoginDialogContent(
+            modifier = Modifier.fillMaxWidth(),
+            isUserSigningIn = isUserSigningIn,
+            signInAnonymously = screenModel::signInAnonymously,
+            signInWithEmailAndPassword = screenModel::signInWithEmailAndPassword,
+            signUpWithEmailAndPassword = screenModel::signUpWithEmailAndPassword,
+        )
     }
-    LoginDialogContent(
-        modifier = Modifier.fillMaxWidth(),
-        isUserSigningIn = isUserSigningIn,
-        signInAnonymously = screenModel::signInAnonymously,
-        signInWithEmailAndPassword = screenModel::signInWithEmailAndPassword,
-        signUpWithEmailAndPassword = screenModel::signUpWithEmailAndPassword,
-    )
 }
 
 @Composable

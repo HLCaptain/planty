@@ -19,7 +19,6 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.transitions.ScreenTransition
 import nest.planty.ui.components.PlantyDialogContent
 
-
 val LocalDialogDismissRequest = compositionLocalOf { {} }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -33,9 +32,9 @@ fun PlantyDialog(
         // Don't use exit animations because
         // it looks choppy while Dialog resizes due to content change.v
         val navigator = LocalNavigator.currentOrThrow
-        val currentScreen = navigator.lastItem
-        val firstScreen = navigator.items.first()
         val onDismissRequest: () -> Unit = {
+            val currentScreen = navigator.lastItem
+            val firstScreen = navigator.items.first()
             if (currentScreen == firstScreen) {
                 onDialogClosed()
             } else {
@@ -43,14 +42,10 @@ fun PlantyDialog(
             }
         }
         AlertDialog(
-            properties = DialogProperties(
-                usePlatformDefaultWidth = false
-            ),
+            properties = DialogProperties(usePlatformDefaultWidth = false),
             onDismissRequest = onDismissRequest,
         ) {
-            PlantyDialogContent(
-                surface = { PlantyDialogContent(content = it) },
-            ) {
+            PlantyDialogContent(surface = { PlantyDialogContent(content = it) }) {
                 CompositionLocalProvider(
                     LocalDialogDismissRequest provides onDismissRequest,
                 ) {

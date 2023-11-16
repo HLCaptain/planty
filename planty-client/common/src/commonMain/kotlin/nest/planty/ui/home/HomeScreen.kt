@@ -3,17 +3,24 @@ package nest.planty.ui.home
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -28,10 +35,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import nest.planty.Res
 import nest.planty.db.Plant
 import nest.planty.getPlatformName
 import nest.planty.ui.dialog.PlantyDialog
+import nest.planty.ui.plant.PlantDetailsScreen
 import nest.planty.ui.profile.ProfileDialogScreen
 
 class HomeScreen : Screen {
@@ -44,67 +54,29 @@ class HomeScreen : Screen {
     internal fun HomeScreen() {
         val screenModel = getScreenModel<HomeScreenModel>()
         val plants by screenModel.plants.collectAsState()
-        val counter by screenModel.counter.collectAsState()
+        val navigator = LocalNavigator.currentOrThrow
         Surface {
             Box(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .scrollable(
+                        rememberScrollState(),
+                        orientation = Orientation.Vertical
+                    )
+                    .fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    // Libres implementation:
-//                    Image(
-//                        painter = Res.image.flower_image.painterResource(),
-//                        contentDescription = "flower image"
-//                    )
-                    // OR if using compose resources:
-//                    Image(
-//                        painter = painterResource("flower_image.jpg),
-//                        contentDescription = "flower image"
-//                    )
                     Text(text = Res.string.hello_x.format(getPlatformName()))
 
-                    Button(onClick = { screenModel.incrementCounter() }) {
-                        Crossfade(
-                            modifier = Modifier.animateContentSize(),
-                            targetState = counter != null
-                        ) {
-                            if (it && counter != null) {
-                                Text(
-                                    if (counter == 0) {
-                                        Res.string.click_me
-                                    } else {
-                                        Res.string.clicked_x_times.format(counter!!, counter.toString())
-                                    }
-                                )
-                            } else {
-                                CircularProgressIndicator(
-                                    strokeWidth = 2.dp
-                                )
-                            }
-                        }
-                    }
-                    Button(onClick = { screenModel.resetCounter() }) {
-                        Text(Res.string.reset_clicks)
-                    }
-
-                    AnimatedVisibility(
-                        modifier = Modifier.animateContentSize(),
-                        visible = plants.isEmpty()
-                    ) {
-                        Text(Res.string.empty_plant_list)
-                    }
-
-                    LazyColumn {
-                        items(plants) { plant ->
-                            PlantItem(
-                                plant = plant,
-                                onRemove = { screenModel.deletePlant(plant.uuid) }
-                            )
-                        }
-                    }
+                    PlantList(
+                        plants = plants,
+                        onSelectPlant = { navigator.push(PlantDetailsScreen(it)) },
+                        deletePlant = { screenModel.deletePlant(it) },
+                    )
 
                     var isProfileDialogShowing by rememberSaveable { mutableStateOf(false) }
                     PlantyDialog(
@@ -136,7 +108,9 @@ class HomeScreen : Screen {
     fun AddPlantForm(
         addPlant: (name: String, description: String) -> Unit,
     ) {
-        Column {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
             var plantName by rememberSaveable { mutableStateOf("") }
             var plantDescription by rememberSaveable { mutableStateOf("") }
             Text(text = Res.string.add_plant)
@@ -163,23 +137,69 @@ class HomeScreen : Screen {
     }
 
     @Composable
+    fun PlantList(
+        plants: List<Plant>,
+        onSelectPlant: (uuid: String) -> Unit,
+        deletePlant: (uuid: String) -> Unit,
+    ) {
+        Crossfade(
+            modifier = Modifier.animateContentSize(),
+            targetState = plants.isEmpty(),
+        ) {
+            if (it) {
+                Text(Res.string.empty_plant_list)
+            } else {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
+                    items(plants) { plant ->
+                        PlantItem(
+                            plant = plant,
+                            onClick = { onSelectPlant(plant.uuid) },
+                            onRemove = { deletePlant(plant.uuid) },
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
     fun PlantItem(
         plant: Plant,
+        onClick: () -> Unit,
         onRemove: () -> Unit,
     ) {
         Card(
-            modifier = Modifier
-                .fillMaxSize()
-                .animateContentSize(),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+            shape = RoundedCornerShape(8.dp),
+            onClick = onClick,
         ) {
-            Row {
-                Column {
-                    Text(text = plant.uuid)
-                    Text(text = plant.name ?: Res.string.plant_no_name)
-                    Text(text = plant.description ?: Res.string.plant_no_description)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Column(
+                    modifier = Modifier.padding(8.dp)
+                ) {
+                    Text(
+                        text = plant.name ?: Res.string.plant_no_name,
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                    Text(
+                        text = plant.uuid.take(8),
+                        style = MaterialTheme.typography.labelMedium,
+                    )
+                    Text(
+                        text = plant.description ?: Res.string.plant_no_description,
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
                 }
-                Button(onClick = onRemove) {
+                Button(
+                    modifier = Modifier.padding(8.dp),
+                    onClick = onRemove
+                ) {
                     Text(Res.string.remove_plant)
                 }
             }

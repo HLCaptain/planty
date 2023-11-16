@@ -19,6 +19,8 @@ class PlantManager(
     private val plantRepository: PlantRepository,
     @NamedCoroutineDispatcherIO private val dispatcherIO: CoroutineDispatcher,
 ) {
+    fun getPlant(uuid: String) = plantRepository.getPlant(uuid)
+
     suspend fun addPlant(
         plantName: String? = null,
         plantDescription: String? = null,

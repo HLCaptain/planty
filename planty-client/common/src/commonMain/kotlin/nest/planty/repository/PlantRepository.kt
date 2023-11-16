@@ -24,6 +24,19 @@ class PlantRepository(
     private val plantMutableStore = plantMutableStoreBuilder.store
     private val plantsMutableStore = plantsByUserMutableStoreBuilder.store
 
+    fun getPlant(uuid: String) = plantMutableStore.stream<StoreReadResponse<Plant>>(
+        StoreReadRequest.cached(
+            key = uuid,
+            refresh = true
+        )
+    ).map {
+        it.throwIfError()
+        Napier.d("Read Response: $it")
+        val data = it.dataOrNull()
+        Napier.d("Plant is $data")
+        data
+    }.flowOn(dispatcherIO)
+
     suspend fun addPlantForUser(plant: Plant) {
         plantMutableStore.write(
             StoreWriteRequest.of(
