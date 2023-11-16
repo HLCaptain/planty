@@ -1,15 +1,16 @@
 package nest.planty.data.store
 
 import io.github.aakira.napier.Napier
-import kotlinx.coroutines.CoroutineDispatcher
-import nest.planty.data.firestore.model.FirestorePlant
+import kotlinx.coroutines.flow.map
+import nest.planty.data.firestore.model.FirestoreSensor
+import nest.planty.data.mapping.toDomainModel
 import nest.planty.data.mapping.toLocalModel
 import nest.planty.data.mapping.toNetworkModel
-import nest.planty.data.network.PlantNetworkDataSource
+import nest.planty.data.network.SensorNetworkDataSource
 import nest.planty.data.sqldelight.DatabaseHelper
-import nest.planty.db.Plant
-import nest.planty.di.NamedCoroutineDispatcherIO
+import nest.planty.db.Sensor
 import nest.planty.di.NamedPlantMutableStore
+import nest.planty.domain.model.DomainSensor
 import org.koin.core.annotation.Single
 import org.mobilenativefoundation.store.store5.Converter
 import org.mobilenativefoundation.store.store5.ExperimentalStoreApi
@@ -20,84 +21,75 @@ import org.mobilenativefoundation.store.store5.SourceOfTruth
 import org.mobilenativefoundation.store.store5.Updater
 import org.mobilenativefoundation.store.store5.UpdaterResult
 
-/**
- * Provides a [MutableStore] for [Plant]s.
- * @param databaseHelper The [DatabaseHelper] to use for local storage.
- * @param plantNetworkDataSource The [PlantNetworkDataSource] to use for remote storage.
- * @return A [MutableStore] for [Plant]s.
- * @see provideBookkeeper
- */
 @OptIn(ExperimentalStoreApi::class)
 @Single
-class PlantMutableStoreBuilder(
+class SensorMutableStoreBuilder(
     databaseHelper: DatabaseHelper,
-    plantNetworkDataSource: PlantNetworkDataSource,
-    @NamedCoroutineDispatcherIO private val dispatcherIO: CoroutineDispatcher,
+    sensorNetworkDataSource: SensorNetworkDataSource,
 ) {
-    val store = providePlantMutableStore(databaseHelper, plantNetworkDataSource, dispatcherIO)
+    val store = provideSensorMutableStore(databaseHelper, sensorNetworkDataSource)
 }
 
 @OptIn(ExperimentalStoreApi::class)
 @Single
 @NamedPlantMutableStore
-fun providePlantMutableStore(
+fun provideSensorMutableStore(
     databaseHelper: DatabaseHelper,
-    plantNetworkDataSource: PlantNetworkDataSource,
-    dispatcher: CoroutineDispatcher,
+    sensorNetworkDataSource: SensorNetworkDataSource,
 ) = MutableStoreBuilder.from(
     fetcher = Fetcher.ofFlow { key ->
-        Napier.d("Fetching plant with key $key")
-        plantNetworkDataSource.fetch(uuid = key)
+        Napier.d("Fetching sensor with key $key")
+        sensorNetworkDataSource.fetch(uuid = key)
     },
     sourceOfTruth = SourceOfTruth.of(
         reader = { key: String ->
             databaseHelper.queryAsOneFlow {
-                Napier.d("User $key has the plant")
-                it.plantQueries.select(key)
-            }
+                Napier.d("Reading sensor at $key")
+                it.sensorQueries.select(key)
+            }.map { it.toDomainModel() }
         },
         writer = { key, local ->
             databaseHelper.withDatabase { db ->
-                Napier.d("Writing plant at $key with $local")
-                db.plantQueries.upsert(local)
+                Napier.d("Writing sensor at $key with $local")
+                db.sensorQueries.upsert(local)
             }
-            plantNetworkDataSource.upsert(local.toNetworkModel())
+            sensorNetworkDataSource.upsert(local.toNetworkModel())
         },
         delete = { key ->
             databaseHelper.withDatabase {
-                Napier.d("Deleting plant at $key")
-                it.plantQueries.delete(key)
+                Napier.d("Deleting sensor at $key")
+                it.sensorQueries.delete(key)
             }
-            plantNetworkDataSource.delete(key)
+            sensorNetworkDataSource.delete(key)
         },
         deleteAll = {
             databaseHelper.withDatabase {
-                Napier.d("Deleting all plants")
-                it.plantQueries.deleteAll()
+                Napier.d("Deleting all sensor")
+                it.sensorQueries.deleteAll()
             }
         }
     ),
-    converter = Converter.Builder<FirestorePlant, Plant, Plant>()
-        .fromOutputToLocal { it }
+    converter = Converter.Builder<FirestoreSensor, Sensor, DomainSensor>()
+        .fromOutputToLocal { it.toLocalModel() }
         .fromNetworkToLocal { it.toLocalModel() }
         .build(),
 ).build(
     updater = Updater.by(
         post = { key, output ->
-            plantNetworkDataSource.upsert(output.toNetworkModel())
+            sensorNetworkDataSource.upsert(output.toNetworkModel())
             UpdaterResult.Success.Typed(output)
         },
         onCompletion = OnUpdaterCompletion(
             onSuccess = { _ ->
-                Napier.d("Successfully updated plants")
+                Napier.d("Successfully updated sensor")
             },
             onFailure = { _ ->
-                Napier.d("Failed to update plants")
+                Napier.d("Failed to update sensor")
             }
         )
     ),
     bookkeeper = provideBookkeeper(
         databaseHelper,
-        Plant::class.simpleName.toString()
+        DomainSensor::class.simpleName.toString()
     ) { it }
 )

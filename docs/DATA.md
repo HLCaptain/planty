@@ -15,7 +15,6 @@ A plant is a living organism that can be monitored and controlled by the app. It
 - `description`: description of the plant.
 - `image`: image of the plant. (May be a compressed image or a web url or an enum representing an icon, TBD)
 - `sensors`: list of sensor and actuator ids that are assigned to the plant.
-- `brokers`: list of broker ids that are assigned to the plant.
 - `ownerUUID`: unique identifier of the owner of the plant.
 - `sensorEvents`: list of `SensorEvent` that are related to the plant.
 - `desiredEnvironment`: desired environment of the plant. Set by the `client`, used by the `broker` to control the plant's environment.
@@ -102,7 +101,7 @@ Assigning sensors and actuators to a plant is the process of assigning sensors a
 1. The user selects a plant in the app.
 2. The app shows a list of sensors and actuators that are connected to the broker that is owned by the user.
 3. The user selects a sensor or an actuator from the list.
-4. The app adds the sensor or actuator's `id` to the plant's `sensors` list in the `/plants` collection. In the same batch, it adds the sensor's broker's `id` to the plant's `brokers` list in the `/plants` collection.
+4. The app adds the sensor or actuator's `id` to the plant's `sensors` list in the `/plants` collection.
 
 ### Controlling the Environment of a Plant
 
@@ -122,7 +121,7 @@ Removing a sensor or actuator of a plant from the app. It is done by the followi
 1. The user selects a plant in the app.
 2. The app shows a list of sensors and actuators that are assigned to the plant.
 3. The user selects a sensor or an actuator from the list.
-4. The app removes the sensor or actuator's `id` from the plant's `sensors` list in the `/plants` collection. In the same batch, it removes the sensor's broker's `id` from the plant's `brokers` list in the `/plants` collection if there are no more sensors or actuators assigned to the plant from that particular broker.
+4. The app removes the sensor or actuator's `id` from the plant's `sensors` list in the `/plants` collection.
 
 ### Remove a Plant
 
@@ -138,7 +137,7 @@ Removing a sensor or actuator from a broker. It is done by the following steps:
 
 1. The user disconnects the sensor or actuator from the broker.
 2. The broker notices via `MQTT` protocoll that the sensor or actuator is disconnected.
-3. The broker removes the sensor or actuator's `id` from the broker's `sensors` list in the `/brokers` collection. In the same batch, it removes the sensor from the `/sensors` collection. It also removes the sensor's `id` from the plant's `sensors` list in the `/plants` collection. The broker is also removed from the `broker` field of the plant if there are no more sensors or actuators assigned to the plant from that particular broker.
+3. The broker removes the sensor or actuator's `id` from the broker's `sensors` list in the `/brokers` collection. In the same batch, it removes the sensor from the `/sensors` collection. It also removes the sensor's `id` from the plant's `sensors` list in the `/plants` collection.
 
 ### Setting Sensor Parameters (WIP, not needed for MVP)
 

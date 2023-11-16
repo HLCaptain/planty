@@ -1,15 +1,15 @@
 package nest.planty.data.mapping
 
 import nest.planty.data.firestore.model.FirestoreSensorEvent
-import nest.planty.data.model.SensorEvent
+import nest.planty.domain.model.DomainSensorEvent
 
-fun SensorEvent.toNetworkModel() = FirestoreSensorEvent(
+fun DomainSensorEvent.toNetworkModel() = FirestoreSensorEvent(
     type = type,
     timestamp = timestamp,
     value = value,
 )
 
-fun FirestoreSensorEvent.toLocalModel() = SensorEvent(
+fun FirestoreSensorEvent.toDomainModel() = DomainSensorEvent(
     type = type,
     timestamp = timestamp,
     value = value,

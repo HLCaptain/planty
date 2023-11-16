@@ -1,49 +1,45 @@
-package nest.planty.ui.home
+package nest.planty.ui.plant_sensor_edit
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import nest.planty.di.NamedCoroutineDispatcherIO
-import nest.planty.manager.AuthManager
-import nest.planty.manager.PlantManager
+import nest.planty.manager.SensorManager
 import org.koin.core.annotation.Factory
+import org.koin.core.annotation.InjectedParam
 
 @Factory
-class HomeScreenModel(
-    private val authManager: AuthManager,
-    private val plantManager: PlantManager,
+class PlantSensorEditScreenModel(
+    @InjectedParam val plantUUID: String,
+    private val sensorManager: SensorManager,
     @NamedCoroutineDispatcherIO private val dispatcherIO: CoroutineDispatcher,
 ) : ScreenModel {
-    val plants = plantManager.plantsByUser
-        .map { it ?: emptyList() }
+    val availableSensors = sensorManager.availableSensors
         .stateIn(
             screenModelScope,
             SharingStarted.Eagerly,
             emptyList()
         )
-    val isUserSignedIn = authManager.isUserSignedIn
+
+    val assignedSensors = sensorManager.getSensorsForPlant(plantUUID)
         .stateIn(
             screenModelScope,
             SharingStarted.Eagerly,
-            false
+            emptyList()
         )
 
-    fun addPlant(
-        name: String,
-        description: String,
-    ) {
+    fun assignSensor(sensorUUID: String) {
         screenModelScope.launch(dispatcherIO) {
-            plantManager.addPlant(name, description)
+            sensorManager.assignSensorToPlant(sensorUUID, plantUUID)
         }
     }
 
-    fun deletePlant(uuid: String) {
+    fun unassignSensor(sensorUUID: String) {
         screenModelScope.launch(dispatcherIO) {
-            plantManager.deletePlant(uuid)
+            sensorManager.unassignSensorFromPlant(sensorUUID, plantUUID)
         }
     }
 }

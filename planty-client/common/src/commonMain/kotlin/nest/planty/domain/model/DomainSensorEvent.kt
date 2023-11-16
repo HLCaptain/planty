@@ -1,6 +1,6 @@
-package nest.planty.data.model
+package nest.planty.domain.model
 
-data class SensorEvent(
+data class DomainSensorEvent(
     val type: String,
     val timestamp: Long,
     val value: String,

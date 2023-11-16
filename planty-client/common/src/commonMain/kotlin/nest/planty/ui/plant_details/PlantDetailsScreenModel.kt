@@ -1,4 +1,4 @@
-package nest.planty.ui.plant
+package nest.planty.ui.plant_details
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope

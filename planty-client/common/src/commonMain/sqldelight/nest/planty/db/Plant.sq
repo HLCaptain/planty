@@ -1,7 +1,7 @@
 import kotlin.String;
 import kotlin.collections.List;
 import kotlin.collections.Map;
-import nest.planty.data.model.SensorEvent;
+import nest.planty.domain.model.DomainSensorEvent;
 
 CREATE TABLE Plant (
     uuid TEXT PRIMARY KEY NOT NULL UNIQUE,
@@ -9,9 +9,8 @@ CREATE TABLE Plant (
     name TEXT,
     description TEXT,
     desiredEnvironment TEXT AS Map<String, String> NOT NULL,
-    sensorEvents TEXT AS List<SensorEvent> NOT NULL,
+    sensorEvents TEXT AS List<DomainSensorEvent> NOT NULL,
     sensors TEXT AS List<String> NOT NULL,
-    brokers TEXT AS List<String> NOT NULL,
     image TEXT
 );
 

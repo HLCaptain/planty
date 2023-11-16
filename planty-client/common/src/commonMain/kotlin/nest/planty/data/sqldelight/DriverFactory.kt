@@ -1,6 +1,5 @@
 package nest.planty.data.sqldelight
 
-import app.cash.sqldelight.adapter.primitive.IntColumnAdapter
 import app.cash.sqldelight.db.QueryResult
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.db.SqlSchema
@@ -10,9 +9,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import nest.planty.db.Click
+import nest.planty.db.Broker
 import nest.planty.db.Database
-import nest.planty.db.NetworkClick
 import nest.planty.db.Plant
 import org.koin.core.annotation.Single
 
@@ -23,14 +21,14 @@ private suspend fun createDatabase(): Database {
 
     val database = Database(
         driver,
-        ClickAdapter = Click.Adapter(numberAdapter = IntColumnAdapter),
-        NetworkClickAdapter = NetworkClick.Adapter(numberAdapter = IntColumnAdapter),
         PlantAdapter = Plant.Adapter(
-            brokersAdapter = listAdapter,
             desiredEnvironmentAdapter = mapAdapter,
             sensorEventsAdapter = sensorEventAdapter,
             sensorsAdapter = listAdapter
-        )
+        ),
+        BrokerAdapter = Broker.Adapter(
+            sensorsAdapter = listAdapter
+        ),
     )
 
     Napier.d("Database created")

@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class FirestorePairingBroker(
-    val id: String,
+    val uuid: String,
     val pairingStarted: Long,
 )

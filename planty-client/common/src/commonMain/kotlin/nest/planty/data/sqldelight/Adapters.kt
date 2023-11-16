@@ -1,7 +1,7 @@
 package nest.planty.data.sqldelight
 
 import app.cash.sqldelight.ColumnAdapter
-import nest.planty.data.model.SensorEvent
+import nest.planty.domain.model.DomainSensorEvent
 
 val mapAdapter = object : ColumnAdapter<Map<String, String>, String> {
     override fun decode(databaseValue: String): Map<String, String> {
@@ -28,16 +28,16 @@ val listAdapter = object : ColumnAdapter<List<String>, String> {
     }
 }
 
-val sensorEventAdapter = object : ColumnAdapter<List<SensorEvent>, String> {
-    override fun decode(databaseValue: String): List<SensorEvent> {
+val sensorEventAdapter = object : ColumnAdapter<List<DomainSensorEvent>, String> {
+    override fun decode(databaseValue: String): List<DomainSensorEvent> {
         if (databaseValue.isEmpty()) return emptyList()
         return databaseValue.split(",").map {
             val (type, timestamp, value) = it.split("=")
-            SensorEvent(type, timestamp.toLong(), value)
+            DomainSensorEvent(type, timestamp.toLong(), value)
         }
     }
 
-    override fun encode(value: List<SensorEvent>): String {
+    override fun encode(value: List<DomainSensorEvent>): String {
         return value.joinToString(",")
     }
 }

@@ -41,7 +41,7 @@ import nest.planty.Res
 import nest.planty.db.Plant
 import nest.planty.getPlatformName
 import nest.planty.ui.dialog.PlantyDialog
-import nest.planty.ui.plant.PlantDetailsScreen
+import nest.planty.ui.plant_details.PlantDetailsScreen
 import nest.planty.ui.profile.ProfileDialogScreen
 
 class HomeScreen : Screen {

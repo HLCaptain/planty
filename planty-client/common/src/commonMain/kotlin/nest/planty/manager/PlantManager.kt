@@ -3,13 +3,17 @@ package nest.planty.manager
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
+import nest.planty.data.mapping.toDomainModel
 import nest.planty.db.Plant
 import nest.planty.di.NamedCoroutineDispatcherIO
 import nest.planty.repository.PlantRepository
+import nest.planty.repository.SensorRepository
 import nest.planty.util.log.randomUUID
 import org.koin.core.annotation.Factory
 
@@ -17,21 +21,28 @@ import org.koin.core.annotation.Factory
 class PlantManager(
     private val authManager: AuthManager,
     private val plantRepository: PlantRepository,
+    private val sensorRepository: SensorRepository,
     @NamedCoroutineDispatcherIO private val dispatcherIO: CoroutineDispatcher,
 ) {
-    fun getPlant(uuid: String) = plantRepository.getPlant(uuid)
+    fun getPlant(uuid: String) = channelFlow {
+        plantRepository.getPlant(uuid).collectLatest { plant ->
+            val sensors = plant?.sensors?.map { sensorUUID ->
+                sensorRepository.getSensor(sensorUUID).firstOrNull()
+            } ?: emptyList()
+            plant?.let { send(plant.toDomainModel(sensors.filterNotNull())) }
+        }
+    }
 
     suspend fun addPlant(
         plantName: String? = null,
         plantDescription: String? = null,
         plantDesiredEnvironment: Map<String, String> = emptyMap(),
         plantSensors: List<String> = emptyList(),
-        plantBrokers: List<String> = emptyList(),
         plantImage: String? = null,
     ) {
         val user = authManager.signedInUser.firstOrNull() ?: return
         Napier.d("Adding plant for user")
-        plantRepository.addPlantForUser(
+        plantRepository.upsertPlantForUser(
             Plant(
                 uuid = randomUUID(),
                 ownerUUID = user.uid,
@@ -40,7 +51,6 @@ class PlantManager(
                 desiredEnvironment = plantDesiredEnvironment,
                 sensorEvents = emptyList(),
                 sensors = plantSensors,
-                brokers = plantBrokers,
                 image = plantImage,
             )
         )

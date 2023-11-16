@@ -12,7 +12,6 @@ data class FirestorePlant(
     val desiredEnvironment: Map<String, String>,
     val sensorEvents: List<FirestoreSensorEvent>,
     val sensors: List<String>,
-    val brokers: List<String>,
     val image: String?,
 ) {
     companion object {
@@ -22,7 +21,6 @@ data class FirestorePlant(
         const val FIELD_OWNER_UUID = "ownerUUID"
         const val FIELD_SENSOR_EVENTS = "sensorEvents"
         const val FIELD_SENSORS = "sensors"
-        const val FIELD_BROKERS = "brokers"
         const val FIELD_IMAGE = "image"
         const val FIELD_DESCRIPTION = "description"
         const val FIELD_DESIRED_ENVIRONMENT = "desiredEnvironment"

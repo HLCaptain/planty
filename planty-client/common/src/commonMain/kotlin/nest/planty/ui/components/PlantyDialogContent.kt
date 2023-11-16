@@ -34,10 +34,10 @@ fun PlantyDialogContent(
     title: @Composable (BoxScope.() -> Unit)? = null,
     text: @Composable (BoxScope.() -> Unit)? = null,
     buttons: @Composable (BoxScope.() -> Unit)? = null,
-    dialogPaddingValues: PaddingValues = JayDialogContentPadding,
-    iconPaddingValues: PaddingValues = JayDialogIconPadding,
-    titlePaddingValues: PaddingValues = JayDialogTitlePadding,
-    textPaddingValues: PaddingValues = JayDialogTextPadding,
+    dialogPaddingValues: PaddingValues = PlantyDialogContentPadding,
+    iconPaddingValues: PaddingValues = PlantyDialogIconPadding,
+    titlePaddingValues: PaddingValues = PlantyDialogTitlePadding,
+    textPaddingValues: PaddingValues = PlantyDialogTextPadding,
     shape: Shape = AlertDialogDefaults.shape,
     containerColor: Color = AlertDialogDefaults.containerColor,
     iconContentColor: Color = AlertDialogDefaults.iconContentColor,
@@ -177,7 +177,7 @@ fun Modifier.dialogWidth(screenWidthDp: Dp = 400.dp) = widthIn(
 )
 
 // Paddings for each of the dialog's parts.
-val JayDialogContentPadding = PaddingValues(all = 24.dp)
-val JayDialogIconPadding = PaddingValues(bottom = 16.dp)
-val JayDialogTitlePadding = PaddingValues(bottom = 16.dp)
-val JayDialogTextPadding = PaddingValues(bottom = 16.dp)
+val PlantyDialogContentPadding = PaddingValues(all = 24.dp)
+val PlantyDialogIconPadding = PaddingValues(bottom = 16.dp)
+val PlantyDialogTitlePadding = PaddingValues(bottom = 16.dp)
+val PlantyDialogTextPadding = PaddingValues(bottom = 16.dp)

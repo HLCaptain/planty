@@ -37,7 +37,7 @@ class PlantRepository(
         data
     }.flowOn(dispatcherIO)
 
-    suspend fun addPlantForUser(plant: Plant) {
+    suspend fun upsertPlantForUser(plant: Plant) {
         plantMutableStore.write(
             StoreWriteRequest.of(
                 key = plant.uuid,

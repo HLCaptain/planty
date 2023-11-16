@@ -34,4 +34,9 @@
     <string name="empty_plant_list">No plants</string>
     <string name="add_plant">Add plant</string>
     <string name="remove_plant">Remove plant</string>
+    <string name="edit_sensors">Edit sensors</string>
+    <string name="available_sensors">Available sensors</string>
+    <string name="assigned_sensors">Assigned sensors</string>
+    <string name="no_assigned_sensors">No assigned sensors</string>
+    <string name="no_available_sensors">No available sensors</string>
 </resources>

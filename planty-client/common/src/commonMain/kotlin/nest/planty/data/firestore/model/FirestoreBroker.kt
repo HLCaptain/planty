@@ -4,7 +4,12 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class FirestoreBroker(
-    val id: String,
+    val uuid: String,
     val ownerUUID: String,
     val sensors: List<String>,
-)
+) {
+    companion object {
+        const val COLLECTION_NAME = "brokers"
+        const val FIELD_OWNER_UUID = "ownerUUID"
+    }
+}
