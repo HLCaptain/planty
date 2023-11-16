@@ -65,6 +65,6 @@ class PlantRepository(
             Napier.d("Read Response: $it")
             val data = it.dataOrNull()
             Napier.d("Plants are $data")
-            data
+            data?.sortedBy { plant -> plant.name }
         }.flowOn(dispatcherIO)
 }

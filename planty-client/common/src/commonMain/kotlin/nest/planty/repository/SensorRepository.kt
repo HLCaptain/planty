@@ -49,6 +49,6 @@ class SensorRepository(
             Napier.d("Read Response: $it")
             val data = it.dataOrNull()
             Napier.d("Sensor is $data")
-            data
+            data?.sortedBy { sensor -> sensor.type }
         }.flowOn(dispatcherIO)
 }
