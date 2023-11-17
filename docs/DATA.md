@@ -10,7 +10,7 @@ There are a few key data structures that are used across the app. Each property 
 
 A plant is a living organism that can be monitored and controlled by the app. It has a few properties:
 
-- `id`: unique identifier of the plant, determined by Firebase.
+- `uuid`: unique identifier of the plant, determined by Firebase.
 - `name`: name of the plant.
 - `description`: description of the plant.
 - `image`: image of the plant. (May be a compressed image or a web url or an enum representing an icon, TBD)
@@ -23,7 +23,7 @@ A plant is a living organism that can be monitored and controlled by the app. It
 
 A sensor is a device that can measure the environment of a plant or and actuator that can control it. It has a few properties:
 
-- `id`: unique identifier of the sensor, determined by Firebase.
+- `uuid`: unique identifier of the sensor, determined by Firebase.
 - `type`: type of the sensor. (e.g. temperature, humidity, light, etc.)
 - `broker`: broker id that the sensor is connected to.
 
@@ -37,17 +37,13 @@ A sensor event is a measurement of the environment. It has a few properties:
 
 ### User
 
-A user is a person that can use the app. It has a few properties:
-
-- `id`: unique identifier of the user, determined by Firebase.
-- `ownedBrokers`: list of `Broker` ids that are owned by the user.
-- `ownedPlants`: list of `Plant` ids that are owned by the user.
+A user is a person that can use the app. It does not appear in the Firestore database, but possesses a `uid` determined by Firebase.
 
 ### Broker
 
 A broker is a device that can sensors and actuators connect to. The broker controls and monitors the environment of the plants via the sensors and actuators. It connects to the Firestore database and uploads/listens to data. It has a few properties:
 
-- `id`: unique identifier of the broker, determined by Firebase.
+- `uuid`: unique identifier of the broker, determined by Firebase.
 - `ownerUUID`: unique identifier of the owner of the broker. Can be empty if the broker is not owned by anyone.
 - `sensors`: list of sensor and actuator ids that are connected to the broker.
 
@@ -55,7 +51,7 @@ A broker is a device that can sensors and actuators connect to. The broker contr
 
 A pairing broker is a broker that is used to pair sensors and actuators to the app. It has a few properties:
 
-- `id`: unique identifier of the broker, determined by Firebase (`Broker` with the same `id` exists in another collection).
+- `uuid`: unique identifier of the broker, determined by Firebase (`Broker` with the same `id` exists in another collection).
 - `pairingStarted`: timestamp of when the pairing started. (Unix epoch timestamp, TBD)
 
 ## Flows
@@ -80,9 +76,9 @@ Pairing is the process of connecting a sensor or an actuator to the app. It is d
 
 1. The user starts the pairing process in the app, which start listening to the `/pairing` collection in Firestore.
 2. The user starts the pairing process to the already setup and connected broker by pressing a button on the broker (or by other means).
-3. The broker creates a `PairingBroker` in the `/pairing` collection in Firestore with its own `id` and the `pairingStarted` timestamp.
+3. The broker creates a `PairingBroker` in the `/pairing` collection in Firestore with its own `uuid` and the `pairingStarted` timestamp.
 4. The user selects the broker in the app to pair with.
-5. The app assigns the user `id` to the `Broker` in the `/brokers` collection and removes the `PairingBroker` from the `/pairing` collection. In the same batch, it adds the broker's `id` to the user's `ownedBrokers` list in the `/users` collection.
+5. The app assigns the user `uuid` to the `Broker` in the `/brokers` collection and removes the `PairingBroker` from the `/pairing` collection.
 
 ### Adding a Plant
 
@@ -99,9 +95,9 @@ Adding a plant is the process of adding a plant to the app. It is done by the fo
 Assigning sensors and actuators to a plant is the process of assigning sensors and actuators to a plant. It is done by the following steps:
 
 1. The user selects a plant in the app.
-2. The app shows a list of sensors and actuators that are connected to the broker that is owned by the user.
+2. The app shows a list of sensors and actuators that are connected to a broker that is owned by the user.
 3. The user selects a sensor or an actuator from the list.
-4. The app adds the sensor or actuator's `id` to the plant's `sensors` list in the `/plants` collection.
+4. The app adds the sensor or actuator's `uuid` to the plant's `sensors` list in the `/plants` collection.
 
 ### Controlling the Environment of a Plant
 
@@ -121,14 +117,14 @@ Removing a sensor or actuator of a plant from the app. It is done by the followi
 1. The user selects a plant in the app.
 2. The app shows a list of sensors and actuators that are assigned to the plant.
 3. The user selects a sensor or an actuator from the list.
-4. The app removes the sensor or actuator's `id` from the plant's `sensors` list in the `/plants` collection.
+4. The app removes the sensor or actuator's `uuid` from the plant's `sensors` list in the `/plants` collection.
 
 ### Remove a Plant
 
 Removing a plant from the app. It is done by the following steps:
 
 1. The user selects a plant in the app.
-2. The app removes the plant from the `/plants` collection and removes the plant's `id` from the user's `ownedPlants` list in the `/users` collection.
+2. The app removes the plant from the `/plants` collection.
 3. The broker receives that it no longer has access to the plant and no longer sends sensor events for the plant.
 
 ### Remove a Sensor or Actuator from a Broker
@@ -137,7 +133,7 @@ Removing a sensor or actuator from a broker. It is done by the following steps:
 
 1. The user disconnects the sensor or actuator from the broker.
 2. The broker notices via `MQTT` protocoll that the sensor or actuator is disconnected.
-3. The broker removes the sensor or actuator's `id` from the broker's `sensors` list in the `/brokers` collection. In the same batch, it removes the sensor from the `/sensors` collection. It also removes the sensor's `id` from the plant's `sensors` list in the `/plants` collection.
+3. The broker removes the sensor or actuator's `id` from the broker's `sensors` list in the `/brokers` collection. In the same batch, it removes the sensor from the `/sensors` collection. It also removes the sensor's `uuid` from any plant's `sensors` list in the `/plants` collection it is assigned to.
 
 ### Setting Sensor Parameters (WIP, not needed for MVP)
 
