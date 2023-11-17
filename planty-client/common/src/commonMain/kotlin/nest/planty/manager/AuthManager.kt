@@ -8,7 +8,7 @@ import org.koin.core.annotation.Single
 class AuthManager(
     private val userRepository: UserRepository
 ) {
-    val signedInUser = userRepository.signedInUser
+    val signedInUser = userRepository.getSignedInUserFlow()
     val isUserSignedIn = signedInUser.map { it != null }
 
     suspend fun signInAnonymously() = userRepository.anonymousSignIn()

@@ -1,22 +1,13 @@
 package nest.planty.repository
 
 import dev.gitlive.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.stateIn
-import nest.planty.di.NamedCoroutineScopeIO
 import org.koin.core.annotation.Single
 
 @Single
 class UserRepository(
     private val auth: FirebaseAuth,
-    @NamedCoroutineScopeIO private val coroutineScopeIO: CoroutineScope,
 ) {
-    val signedInUser = auth.authStateChanged.stateIn(
-        scope = coroutineScopeIO,
-        started = SharingStarted.Eagerly,
-        initialValue = auth.currentUser
-    )
+    fun getSignedInUserFlow() = auth.authStateChanged
 
     suspend fun anonymousSignIn() {
         auth.signInAnonymously()

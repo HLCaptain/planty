@@ -12,6 +12,7 @@ import org.koin.core.annotation.Factory
 import org.mobilenativefoundation.store.store5.ExperimentalStoreApi
 import org.mobilenativefoundation.store.store5.StoreReadRequest
 import org.mobilenativefoundation.store.store5.StoreReadResponse
+import org.mobilenativefoundation.store.store5.StoreWriteRequest
 
 @Factory
 class BrokerRepository(
@@ -52,4 +53,14 @@ class BrokerRepository(
             Napier.d("Broker is $data")
             data
         }.flowOn(dispatcherIO)
+
+    @OptIn(ExperimentalStoreApi::class)
+    suspend fun upsertBroker(broker: DomainBroker) {
+        brokerMutableStore.write(
+            StoreWriteRequest.of(
+                key = broker.uuid,
+                value = broker
+            )
+        )
+    }
 }

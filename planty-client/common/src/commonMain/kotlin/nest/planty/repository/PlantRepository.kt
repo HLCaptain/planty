@@ -1,13 +1,10 @@
 package nest.planty.repository
 
 import io.github.aakira.napier.Napier
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import nest.planty.data.store.PlantMutableStoreBuilder
 import nest.planty.data.store.PlantsByUserMutableStoreBuilder
 import nest.planty.db.Plant
-import nest.planty.di.NamedCoroutineDispatcherIO
 import org.koin.core.annotation.Factory
 import org.mobilenativefoundation.store.store5.ExperimentalStoreApi
 import org.mobilenativefoundation.store.store5.StoreReadRequest
@@ -19,7 +16,6 @@ import org.mobilenativefoundation.store.store5.StoreWriteRequest
 class PlantRepository(
     plantMutableStoreBuilder: PlantMutableStoreBuilder,
     plantsByUserMutableStoreBuilder: PlantsByUserMutableStoreBuilder,
-    @NamedCoroutineDispatcherIO private val dispatcherIO: CoroutineDispatcher
 ) {
     private val plantMutableStore = plantMutableStoreBuilder.store
     private val plantsMutableStore = plantsByUserMutableStoreBuilder.store
@@ -35,7 +31,7 @@ class PlantRepository(
         val data = it.dataOrNull()
         Napier.d("Plant is $data")
         data
-    }.flowOn(dispatcherIO)
+    }
 
     suspend fun upsertPlantForUser(plant: Plant) {
         plantMutableStore.write(
@@ -66,5 +62,5 @@ class PlantRepository(
             val data = it.dataOrNull()
             Napier.d("Plants are $data")
             data?.sortedBy { plant -> plant.name }
-        }.flowOn(dispatcherIO)
+        }
 }

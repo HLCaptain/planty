@@ -35,11 +35,11 @@ class BrokerMutableStoreBuilder(
 @NamedPlantMutableStore
 fun provideBrokerMutableStore(
     databaseHelper: DatabaseHelper,
-    sensorNetworkDataSource: BrokerNetworkDataSource,
+    brokerNetworkDataSource: BrokerNetworkDataSource,
 ) = MutableStoreBuilder.from(
     fetcher = Fetcher.ofFlow { key ->
         Napier.d("Fetching broker with key $key")
-        sensorNetworkDataSource.fetch(uuid = key)
+        brokerNetworkDataSource.fetch(uuid = key)
     },
     sourceOfTruth = SourceOfTruth.of(
         reader = { key: String ->
@@ -53,14 +53,14 @@ fun provideBrokerMutableStore(
                 Napier.d("Writing broker at $key with $local")
                 db.brokerQueries.upsert(local)
             }
-            sensorNetworkDataSource.upsert(local.toNetworkModel())
+            brokerNetworkDataSource.upsert(local.toNetworkModel())
         },
         delete = { key ->
             databaseHelper.withDatabase {
                 Napier.d("Deleting broker at $key")
                 it.brokerQueries.delete(key)
             }
-            sensorNetworkDataSource.delete(key)
+            brokerNetworkDataSource.delete(key)
         },
         deleteAll = {
             databaseHelper.withDatabase {
@@ -76,7 +76,7 @@ fun provideBrokerMutableStore(
 ).build(
     updater = Updater.by(
         post = { key, output ->
-            sensorNetworkDataSource.upsert(output.toNetworkModel())
+            brokerNetworkDataSource.upsert(output.toNetworkModel())
             UpdaterResult.Success.Typed(output)
         },
         onCompletion = OnUpdaterCompletion(

@@ -24,7 +24,6 @@ class ProfileScreenModel(
             false
         )
 
-
     val isUserSigningOut = flow { emit(false) }
         .stateIn(
             screenModelScope,
@@ -37,14 +36,14 @@ class ProfileScreenModel(
         .stateIn(
             screenModelScope,
             SharingStarted.Eagerly,
-            authManager.signedInUser.value?.photoURL
+            null
         )
 
     val userUUID = authManager.signedInUser.map { it?.uid }
         .stateIn(
             screenModelScope,
             SharingStarted.Eagerly,
-            authManager.signedInUser.value?.uid
+            null
         )
 
     val userEmail = authManager.signedInUser
@@ -52,7 +51,7 @@ class ProfileScreenModel(
         .stateIn(
             screenModelScope,
             SharingStarted.Eagerly,
-            authManager.signedInUser.value?.email
+            null
         )
 
     val userPhoneNumber = authManager.signedInUser
@@ -60,7 +59,7 @@ class ProfileScreenModel(
         .stateIn(
             screenModelScope,
             SharingStarted.Eagerly,
-            authManager.signedInUser.value?.phoneNumber
+            null
         )
 
     val userName = authManager.signedInUser
@@ -68,7 +67,7 @@ class ProfileScreenModel(
         .stateIn(
             screenModelScope,
             SharingStarted.Eagerly,
-            authManager.signedInUser.value?.displayName
+            null
         )
 
     fun signOut() {

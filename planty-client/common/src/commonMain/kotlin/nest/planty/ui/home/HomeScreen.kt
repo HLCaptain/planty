@@ -40,7 +40,9 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import nest.planty.Res
 import nest.planty.db.Plant
 import nest.planty.getPlatformName
+import nest.planty.ui.components.MenuButton
 import nest.planty.ui.dialog.PlantyDialog
+import nest.planty.ui.pairing.PairingScreen
 import nest.planty.ui.plant_details.PlantDetailsScreen
 import nest.planty.ui.profile.ProfileDialogScreen
 
@@ -99,6 +101,10 @@ class HomeScreen : Screen {
                             }
                         )
                     }
+
+                    PairBrokerButton(
+                        onClick = { navigator.push(PairingScreen()) }
+                    )
                 }
             }
         }
@@ -204,5 +210,15 @@ class HomeScreen : Screen {
                 }
             }
         }
+    }
+
+    @Composable
+    fun PairBrokerButton(
+        onClick: () -> Unit,
+    ) {
+        MenuButton(
+            onClick = onClick,
+            text = Res.string.pair_broker
+        )
     }
 }
