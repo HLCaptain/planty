@@ -39,6 +39,8 @@
     <string name="assigned_sensors">Assigned sensors</string>
     <string name="no_assigned_sensors">No assigned sensors</string>
     <string name="no_available_sensors">No available sensors</string>
+    <string name="assign_sensor">Assign</string>
+    <string name="unassign_sensor">Unassign</string>
     <string name="pairing_brokers">Pairing brokers</string>
     <string name="pair_broker">Pair broker</string>
 </resources>

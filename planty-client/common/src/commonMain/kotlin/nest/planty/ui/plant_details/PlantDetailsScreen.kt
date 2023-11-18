@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
@@ -130,16 +131,19 @@ class PlantDetailsScreen(private val plantUUID: String) : Screen {
     fun SensorItem(sensor: DomainSensor) {
         Card {
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                modifier = Modifier
+                    .padding(vertical = 8.dp, horizontal = 16.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = sensor.uuid.take(8),
-                    style = MaterialTheme.typography.titleSmall,
+                    text = sensor.uuid.take(16),
+                    style = MaterialTheme.typography.titleLarge,
                 )
                 Text(
                     text = sensor.type,
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.titleLarge,
                 )
             }
         }

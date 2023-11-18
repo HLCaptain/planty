@@ -4,6 +4,8 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import nest.planty.di.NamedCoroutineDispatcherIO
@@ -17,19 +19,24 @@ class PlantSensorEditScreenModel(
     private val sensorManager: SensorManager,
     @NamedCoroutineDispatcherIO private val dispatcherIO: CoroutineDispatcher,
 ) : ScreenModel {
-    val availableSensors = sensorManager.availableSensors
+    val assignedSensors = sensorManager.getSensorsForPlant(plantUUID)
+        .map { sensors -> sensors.groupBy { it.ownerBroker } }
         .stateIn(
             screenModelScope,
             SharingStarted.Eagerly,
-            emptyList()
+            emptyMap()
         )
 
-    val assignedSensors = sensorManager.getSensorsForPlant(plantUUID)
-        .stateIn(
-            screenModelScope,
-            SharingStarted.Eagerly,
-            emptyList()
-        )
+    val availableSensors = combine(
+        sensorManager.availableSensors,
+        assignedSensors
+    ) { availableSensors, assignedSensors ->
+        availableSensors.minus(assignedSensors.values.flatten().distinct().toSet()).groupBy { it.ownerBroker }
+    }.stateIn(
+        screenModelScope,
+        SharingStarted.Eagerly,
+        emptyMap()
+    )
 
     fun assignSensor(sensorUUID: String) {
         screenModelScope.launch(dispatcherIO) {

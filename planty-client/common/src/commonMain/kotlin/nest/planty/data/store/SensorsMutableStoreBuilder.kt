@@ -57,15 +57,12 @@ fun provideSensorsMutableStore(
                     db.sensorQueries.upsert(it)
                 }
             }
-            local.forEach { sensorNetworkDataSource.upsert(it.toNetworkModel()) }
-
         },
         delete = { key ->
             databaseHelper.withDatabase {
                 Napier.d("Deleting sensor at $key")
                 it.sensorQueries.delete(key)
             }
-            sensorNetworkDataSource.delete(key)
         },
         deleteAll = {
             databaseHelper.withDatabase {

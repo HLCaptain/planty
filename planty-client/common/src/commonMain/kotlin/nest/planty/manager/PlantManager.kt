@@ -4,10 +4,9 @@ import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import nest.planty.data.mapping.toDomainModel
 import nest.planty.db.Plant
@@ -25,13 +24,14 @@ class PlantManager(
     @NamedCoroutineDispatcherIO private val dispatcherIO: CoroutineDispatcher,
 ) {
     fun getPlant(uuid: String) = channelFlow {
-        plantRepository.getPlant(uuid).collectLatest { plant ->
+        plantRepository.getPlant(uuid).collect { plant ->
             val sensors = plant?.sensors?.map { sensorUUID ->
                 sensorRepository.getSensor(sensorUUID).firstOrNull()
             } ?: emptyList()
+            Napier.d("Plant is $plant")
             plant?.let { send(plant.toDomainModel(sensors.filterNotNull())) }
         }
-    }
+    }.flowOn(dispatcherIO)
 
     suspend fun addPlant(
         plantName: String? = null,
@@ -69,6 +69,6 @@ class PlantManager(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val plantsByUser = authManager.signedInUser.flatMapLatest { user ->
-        user?.uid?.let { plantRepository.getPlantsByUser(it) } ?: emptyFlow()
+        user?.uid?.let { plantRepository.getPlantsByUser(it) } ?: flowOf(emptyList())
     }.flowOn(dispatcherIO)
 }

@@ -61,7 +61,6 @@ fun providePlantMutableStore(
                 Napier.d("Writing plant at $key with $local")
                 db.plantQueries.upsert(local)
             }
-            plantNetworkDataSource.upsert(local.toNetworkModel())
         },
         delete = { key ->
             databaseHelper.withDatabase {

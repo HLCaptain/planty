@@ -17,6 +17,7 @@ class SensorRepository(
 ) {
     @OptIn(ExperimentalStoreApi::class)
     private val sensorMutableStore = sensorMutableStoreBuilder.store
+    @OptIn(ExperimentalStoreApi::class)
     private val sensorsMutableStore = sensorsMutableStoreBuilder.store
 
     @OptIn(ExperimentalStoreApi::class)

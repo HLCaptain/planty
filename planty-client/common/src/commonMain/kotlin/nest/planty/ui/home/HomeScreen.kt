@@ -74,11 +74,7 @@ class HomeScreen : Screen {
                 ) {
                     Text(text = Res.string.hello_x.format(getPlatformName()))
 
-                    PlantList(
-                        plants = plants,
-                        onSelectPlant = { navigator.push(PlantDetailsScreen(it)) },
-                        deletePlant = { screenModel.deletePlant(it) },
-                    )
+                    PairBrokerButton(onClick = { navigator.push(PairingScreen()) })
 
                     var isProfileDialogShowing by rememberSaveable { mutableStateOf(false) }
                     PlantyDialog(
@@ -102,8 +98,10 @@ class HomeScreen : Screen {
                         )
                     }
 
-                    PairBrokerButton(
-                        onClick = { navigator.push(PairingScreen()) }
+                    PlantList(
+                        plants = plants,
+                        onSelectPlant = { navigator.push(PlantDetailsScreen(it)) },
+                        deletePlant = { screenModel.deletePlant(it) },
                     )
                 }
             }
@@ -185,6 +183,7 @@ class HomeScreen : Screen {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
                     modifier = Modifier.padding(8.dp)
