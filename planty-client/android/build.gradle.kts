@@ -1,3 +1,5 @@
+import org.jetbrains.compose.internal.utils.localPropertiesFile
+
 plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.android.application)
@@ -14,6 +16,34 @@ repositories {
 }
 
 android {
+    signingConfigs {
+        val properties = localPropertiesFile.readLines().associate {
+            if (it.startsWith("#") || !it.contains("=")) return@associate "" to ""
+            val (key, value) = it.split("=", limit = 2)
+            key to value
+        }
+
+        val debugStorePath = properties["DEBUG_KEY_PATH"].toString()
+        val debugKeyAlias = properties["DEBUG_KEY_ALIAS"].toString()
+        val debugStorePassword = properties["DEBUG_KEYSTORE_PASSWORD"].toString()
+        val debugKeyPassword = properties["DEBUG_KEY_PASSWORD"].toString()
+        getByName("debug") {
+            storeFile = file(debugStorePath)
+            keyAlias = debugKeyAlias
+            storePassword = debugStorePassword
+            keyPassword = debugKeyPassword
+        }
+        val releaseStorePath = properties["RELEASE_KEY_PATH"].toString()
+        val releaseKeyAlias = properties["RELEASE_KEY_ALIAS"].toString()
+        val releaseStorePassword = properties["RELEASE_KEYSTORE_PASSWORD"].toString()
+        val releaseKeyPassword = properties["RELEASE_KEY_PASSWORD"].toString()
+        create("release") {
+            storeFile = file(releaseStorePath)
+            keyAlias = releaseKeyAlias
+            storePassword = releaseStorePassword
+            keyPassword = releaseKeyPassword
+        }
+    }
     namespace = "nest.planty"
     compileSdk = 34
     defaultConfig {
@@ -26,6 +56,7 @@ android {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     applicationVariants.all {

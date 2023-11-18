@@ -46,3 +46,4 @@ bin/
 
 ### Configuration files ###
 **/google-services.json
+**/*.keystore
