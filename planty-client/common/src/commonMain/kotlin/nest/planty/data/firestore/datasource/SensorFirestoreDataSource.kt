@@ -14,7 +14,7 @@ class SensorFirestoreDataSource(
     private val firestore: FirebaseFirestore,
 ) : SensorNetworkDataSource {
     override fun fetch(uuid: String): Flow<FirestoreSensor> {
-        Napier.d("Fetching sensors")
+        Napier.d("Fetching sensor $uuid")
         return firestore
             .collection(FirestoreSensor.COLLECTION_NAME)
             .document(uuid)

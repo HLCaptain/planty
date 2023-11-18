@@ -20,7 +20,7 @@ class PlantSensorEditScreenModel(
     @NamedCoroutineDispatcherIO private val dispatcherIO: CoroutineDispatcher,
 ) : ScreenModel {
     val assignedSensors = sensorManager.getSensorsForPlant(plantUUID)
-        .map { sensors -> sensors.groupBy { it.ownerBroker } }
+        .map { sensors -> sensors?.groupBy { it.ownerBroker } ?: emptyMap() }
         .stateIn(
             screenModelScope,
             SharingStarted.Eagerly,

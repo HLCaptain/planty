@@ -29,7 +29,7 @@ class PlantManager(
                 sensorRepository.getSensor(sensorUUID).firstOrNull()
             } ?: emptyList()
             Napier.d("Plant is $plant")
-            plant?.let { send(plant.toDomainModel(sensors.filterNotNull())) }
+            send(plant?.toDomainModel(sensors.filterNotNull()))
         }
     }.flowOn(dispatcherIO)
 

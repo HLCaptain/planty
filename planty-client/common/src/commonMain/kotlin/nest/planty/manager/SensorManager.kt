@@ -40,7 +40,7 @@ class SensorManager(
 
     fun getSensorsForPlant(plantUUID: String) = plantManager
         .getPlant(plantUUID)
-        .map { it.sensors }
+        .map { it?.sensors }
 
     suspend fun unassignSensorFromPlant(sensorUUID: String, plantUUID: String) {
         plantRepository.getPlant(plantUUID).firstOrNull()?.let { plant ->

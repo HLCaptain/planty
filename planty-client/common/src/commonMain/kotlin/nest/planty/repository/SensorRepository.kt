@@ -1,6 +1,7 @@
 package nest.planty.repository
 
 import io.github.aakira.napier.Napier
+import kotlinx.coroutines.flow.dropWhile
 import kotlinx.coroutines.flow.map
 import nest.planty.data.store.SensorMutableStoreBuilder
 import nest.planty.data.store.SensorsMutableStoreBuilder
@@ -23,7 +24,9 @@ class SensorRepository(
     @OptIn(ExperimentalStoreApi::class)
     fun getSensor(uuid: String) = sensorMutableStore.stream<StoreReadResponse<DomainSensor>>(
         StoreReadRequest.fresh(key = uuid)
-    ).map {
+    ).dropWhile {
+        it is StoreReadResponse.Loading
+    }.map {
         it.throwIfError()
         Napier.d("Read Response: $it")
         val data = it.dataOrNull()
@@ -34,11 +37,10 @@ class SensorRepository(
     @OptIn(ExperimentalStoreApi::class)
     fun getSensorsByBroker(brokerUUID: String) =
         sensorsMutableStore.stream<StoreReadResponse<List<DomainSensor>>>(
-            StoreReadRequest.cached(
-                key = brokerUUID,
-                refresh = true
-            )
-        ).map {
+            StoreReadRequest.fresh(key = brokerUUID)
+        ).dropWhile {
+            it is StoreReadResponse.Loading
+        }.map {
             it.throwIfError()
             Napier.d("Read Response: $it")
             val data = it.dataOrNull()

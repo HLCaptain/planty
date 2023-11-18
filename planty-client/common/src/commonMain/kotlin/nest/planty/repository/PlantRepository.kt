@@ -1,6 +1,7 @@
 package nest.planty.repository
 
 import io.github.aakira.napier.Napier
+import kotlinx.coroutines.flow.dropWhile
 import kotlinx.coroutines.flow.map
 import nest.planty.data.store.PlantMutableStoreBuilder
 import nest.planty.data.store.PlantsByUserMutableStoreBuilder
@@ -22,7 +23,9 @@ class PlantRepository(
 
     fun getPlant(uuid: String) = plantMutableStore.stream<StoreReadResponse<Plant>>(
         StoreReadRequest.fresh(key = uuid)
-    ).map {
+    ).dropWhile {
+        it is StoreReadResponse.Loading
+    }.map {
         it.throwIfError()
         Napier.d("Read Response: $it")
         val data = it.dataOrNull()
@@ -50,7 +53,9 @@ class PlantRepository(
     fun getPlantsByUser(userUUID: String) =
         plantsMutableStore.stream<StoreReadResponse<List<Plant>>>(
             StoreReadRequest.fresh(key = userUUID)
-        ).map {
+        ).dropWhile {
+            it is StoreReadResponse.Loading
+        }.map {
             it.throwIfError()
             Napier.d("Read Response: $it")
             val data = it.dataOrNull()
