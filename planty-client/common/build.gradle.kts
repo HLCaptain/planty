@@ -13,7 +13,7 @@ plugins {
 }
 
 group = "nest"
-version = "1.0-SNAPSHOT"
+version = "0.1.1-alpha"
 
 kotlin {
     jvmToolchain(17)
@@ -135,6 +135,7 @@ android {
     defaultConfig {
         minSdk = 21
     }
+    version = project.version.toString()
 }
 
 sqldelight {

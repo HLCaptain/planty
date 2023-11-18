@@ -12,4 +12,5 @@ dependencies {
 
 application {
     mainClass = "nest.planty.MainKt"
+    version = project.version.toString()
 }

@@ -23,5 +23,7 @@ kotlin {
 }
 
 compose.experimental {
-    web.application {}
+    web.application {
+        version = project.version.toString()
+    }
 }

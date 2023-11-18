@@ -8,9 +8,6 @@ plugins {
     alias(libs.plugins.google.services)
 }
 
-group = "nest"
-version = "1.0-SNAPSHOT"
-
 repositories {
     mavenCentral()
 }
@@ -50,8 +47,8 @@ android {
         applicationId = "nest.planty"
         minSdk = 21
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0-SNAPSHOT"
+        versionCode = 2
+        versionName = project.version.toString()
     }
     buildTypes {
         getByName("release") {
