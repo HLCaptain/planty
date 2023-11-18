@@ -1,0 +1,27 @@
+import kotlin.String;
+import kotlin.collections.List;
+
+CREATE TABLE Broker(
+    uuid TEXT PRIMARY KEY NOT NULL UNIQUE,
+    ownerUUID TEXT NOT NULL,
+    sensors TEXT AS List<String> NOT NULL
+);
+
+select:
+SELECT * FROM Broker WHERE uuid = ?;
+
+getBrokersForUser:
+SELECT * FROM Broker WHERE ownerUUID = ?;
+
+upsert:
+INSERT OR REPLACE INTO Broker
+VALUES ?;
+
+delete:
+DELETE FROM Broker WHERE uuid = ?;
+
+deleteAllBrokersForUser:
+DELETE FROM Broker WHERE ownerUUID = ?;
+
+deleteAll:
+DELETE FROM Broker;

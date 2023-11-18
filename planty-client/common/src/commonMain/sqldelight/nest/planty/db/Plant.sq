@@ -1,17 +1,34 @@
+import kotlin.String;
+import kotlin.collections.List;
+import kotlin.collections.Map;
+import nest.planty.domain.model.DomainSensorEvent;
+
 CREATE TABLE Plant (
     uuid TEXT PRIMARY KEY NOT NULL UNIQUE,
-    ownerUUID TEXT NOT NULL
+    ownerUUID TEXT NOT NULL,
+    name TEXT,
+    description TEXT,
+    desiredEnvironment TEXT AS Map<String, String> NOT NULL,
+    sensorEvents TEXT AS List<DomainSensorEvent> NOT NULL,
+    sensors TEXT AS List<String> NOT NULL,
+    image TEXT
 );
+
+select:
+SELECT * FROM Plant WHERE uuid = ?;
 
 getPlantsForUser:
 SELECT * FROM Plant WHERE ownerUUID = ?;
 
-createNewPlantForUser:
-INSERT INTO Plant (uuid, ownerUUID)
-VALUES (?, ?);
+upsert:
+INSERT OR REPLACE INTO Plant
+VALUES ?;
 
-deletePlantForUser:
-DELETE FROM Plant WHERE uuid = ? AND ownerUUID = ?;
+delete:
+DELETE FROM Plant WHERE uuid = ?;
 
 deleteAllPlantsForUser:
 DELETE FROM Plant WHERE ownerUUID = ?;
+
+deleteAll:
+DELETE FROM Plant;

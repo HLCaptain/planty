@@ -11,6 +11,9 @@ annotation class NamedCoroutineDispatcherIO
 @Named("CoroutineDispatcherMain")
 annotation class NamedCoroutineDispatcherMain
 
+@Named("CoroutineDispatcherDefault")
+annotation class NamedCoroutineDispatcherDefault
+
 /**
  * No IO dispatcher in Kotlin Coroutines Core, provide platform specific implementation
  */
@@ -20,4 +23,8 @@ expect fun provideDispatcherIO(): CoroutineDispatcher
 
 @Factory
 @NamedCoroutineDispatcherMain
-fun provideDispatcherMain() = Dispatchers.Main
+expect fun provideDispatcherMain(): CoroutineDispatcher
+
+@Factory
+@NamedCoroutineDispatcherDefault
+fun provideDispatcherDefault() = Dispatchers.Default

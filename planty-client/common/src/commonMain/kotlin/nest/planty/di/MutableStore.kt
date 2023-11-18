@@ -7,3 +7,6 @@ annotation class NamedClickMutableStore
 
 @Named("PlantMutableStore")
 annotation class NamedPlantMutableStore
+
+@Named("PlantsMutableStore")
+annotation class NamedPlantsMutableStore

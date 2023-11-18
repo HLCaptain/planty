@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.google.ksp)
+    alias(libs.plugins.google.services)
 }
 
 group = "nest"
@@ -43,6 +44,8 @@ android {
 dependencies {
     implementation(project(":common"))
     implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.google.firebase.bom))
+    implementation(libs.google.firebase.common)
 
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.core)

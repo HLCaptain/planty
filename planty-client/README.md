@@ -32,15 +32,18 @@ Navigation is implemented using the pragmatic [Voyager](https://github.com/adrie
 The project is organized into several modules (or packages):
 
 - `data`: contains data related `DataSource` and framework dependent classes.
-  - `local-framework-name`: contains local data persistance classes.
-  - `remote-framework-name`: contains remote data persistance classes.
+  - `network`: contains interfaces for network related `DataSource`s.
+  - `sqldelight`: SQLDelight related classes used for local persistency.
+  - `firestore`: Firebase Firestore related classes used for remote persistency. Implements `network` interfaces.
 - `ui`: contains UI related classes. Single screen is organized into a single package.
-  - `screen-name`: contains the file for a single screen.
-    - `model`: contains the data models used to build up the screen UI.
-- `repo`: contains `Repositories`.
-  - `model`: contains the data models, independent from `DataSource` class implementations.
+  - `screen-name`: contains files for a single screen. Usually contains:
+    - `ScreenNameScreen.kt`: Voyager screen.
+    - `ScreenNameScreenModel.kt`: Voyager equivalent of `ViewModel`, manages UI state and delegates business logic to `Manager`s.
+- `repository`: contains `Repositories`, which depend on other `Repositories` and `Manager`s.
+- `domain`: contains classes independent from UI and Platform.
+  - `model`: contains the data models.
 - `manager`: contains `Manager` classes.
-- `di`: contains dependency injection related classes, like `AppModule.kt` and `PlatformModule.kt` containing the factories for dependency injections in case of `Koin`. Other classes may contain submodules for dependency injection.
+- `di`: contains dependency injection related classes.
 - `util`: additional classes that are used across the project.
 
 This structure can be altered if needed, but it is recommended to keep it as simple as possible. Singleton-like classes (`Activity` in case of Android, or `Main` in case of Desktop can be placed in the root of the package).
@@ -57,9 +60,25 @@ It is recommended to enable `Settings` -> `Experimental` -> `Configure all Gradl
 
 Have your Android SDK installed and set up. You can download it from Android Studio. Your emulator should support API 21 (Android 5.0 Lollipop) or higher.
 
-### JVM
+### Desktop
 
-Desktop app is based on Java Swing under the hood.
+Desktop app is based on Java Swing under the hood. Due to a [dependency issue](https://github.com/adrielcafe/voyager/issues/147) related to [Voyager](https://github.com/adrielcafe/voyager), all `Coroutine` calls must be dispatched explicitly with a `CoroutineDispatcher`. Otherwise, the desktop app will crash.
+
+#### Bad
+
+```kotlin
+screenModelScope.launch {
+    clickManager.incrementClickCount()
+}
+```
+
+#### Good
+
+```kotlin
+screenModelScope.launch(dispatcherIO) {
+    clickManager.incrementClickCount()
+}
+```
 
 ### Web
 

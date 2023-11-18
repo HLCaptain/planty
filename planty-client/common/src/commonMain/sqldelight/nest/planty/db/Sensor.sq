@@ -1,0 +1,24 @@
+CREATE TABLE Sensor (
+    uuid TEXT PRIMARY KEY NOT NULL UNIQUE,
+    ownerBroker TEXT NOT NULL,
+    type TEXT NOT NULL
+);
+
+select:
+SELECT * FROM Sensor WHERE uuid = ?;
+
+getSensorsForBroker:
+SELECT * FROM Sensor WHERE ownerBroker = ?;
+
+upsert:
+INSERT OR REPLACE INTO Sensor
+VALUES ?;
+
+delete:
+DELETE FROM Sensor WHERE uuid = ?;
+
+deleteAllSensorsForBroker:
+DELETE FROM Sensor WHERE ownerBroker = ?;
+
+deleteAll:
+DELETE FROM Sensor;

@@ -1,3 +1,4 @@
+import org.jetbrains.compose.internal.utils.localPropertiesFile
 import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 
 plugins {
@@ -8,7 +9,7 @@ plugins {
     alias(libs.plugins.sqldelight)
     alias(libs.plugins.libres)
     alias(libs.plugins.google.ksp)
-//    alias(libs.plugins.google.services)
+    alias(libs.plugins.buildconfig)
 }
 
 group = "nest"
@@ -42,7 +43,7 @@ kotlin {
                 api(libs.koin.core)
                 implementation(libs.koin.annotations)
                 implementation(libs.koin.compose)
-                implementation(libs.napier)
+                api(libs.napier)
                 implementation(libs.store)
                 implementation(libs.kotlinx.atomicfu)
                 implementation(libs.kotlinx.coroutines)
@@ -50,6 +51,10 @@ kotlin {
                 implementation(libs.libres.compose)
                 implementation(libs.sqldelight.coroutines)
                 implementation(libs.sqldelight.adapters)
+                api(libs.gitlive.firebase.common)
+                api(libs.gitlive.firebase.auth)
+                api(libs.gitlive.firebase.firestore)
+                implementation(libs.uuid)
             }
         }
 
@@ -98,13 +103,10 @@ kotlin {
 
 dependencies {
     add("kspCommonMainMetadata", libs.koin.ksp)
-    implementation(libs.gitlive.firebase.common)
-    implementation(libs.gitlive.firebase.auth)
-    implementation(libs.gitlive.firebase.firestore)
-    implementation(project.dependencies.platform(libs.google.firebase.bom))
-    implementation(libs.google.firebase.common)
-    implementation(libs.google.firebase.auth)
-    implementation(libs.google.firebase.firestore)
+    api(project.dependencies.platform(libs.google.firebase.bom))
+    api(libs.google.firebase.common)
+    api(libs.google.firebase.auth)
+    api(libs.google.firebase.firestore)
 }
 
 // WORKAROUND: ADD this dependsOn("kspCommonMainKotlinMetadata") instead of above dependencies
@@ -153,4 +155,29 @@ libres {
 
 kotlin.sourceSets.all {
     languageSettings.optIn("kotlin.experimental.ExperimentalObjCName")
+}
+
+buildConfig {
+    // Use local.properties file to store secrets
+    val properties = localPropertiesFile.readLines().associate {
+        if (it.startsWith("#") || !it.contains("=")) return@associate "" to ""
+        val (key, value) = it.split("=", limit = 2)
+        key to value
+    }
+
+    val firebaseWebAndDesktopApiKey = properties["FIREBASE_WEB_AND_DESKTOP_API_KEY"].toString()
+    val firebaseMessagingSenderId = properties["FIREBASE_MESSAGING_SENDER_ID"].toString()
+    val firebaseDesktopAppId = properties["FIREBASE_DESKTOP_APP_ID"].toString()
+    val firebaseWebAppId = properties["FIREBASE_WEB_APP_ID"].toString()
+    val firebaseStorageBucket = properties["FIREBASE_STORAGE_BUCKET"].toString()
+    val firebaseProjectId = properties["FIREBASE_PROJECT_ID"].toString()
+    val firebaseAuthDomain = properties["FIREBASE_AUTH_DOMAIN"].toString()
+
+    buildConfigField("String", "FIREBASE_WEB_AND_DESKTOP_API_KEY", "\"$firebaseWebAndDesktopApiKey\"")
+    buildConfigField("String", "FIREBASE_MESSAGING_SENDER_ID", "\"$firebaseMessagingSenderId\"")
+    buildConfigField("String", "FIREBASE_DESKTOP_APP_ID", "\"$firebaseDesktopAppId\"")
+    buildConfigField("String", "FIREBASE_WEB_APP_ID", "\"$firebaseWebAppId\"")
+    buildConfigField("String", "FIREBASE_STORAGE_BUCKET", "\"$firebaseStorageBucket\"")
+    buildConfigField("String", "FIREBASE_PROJECT_ID", "\"$firebaseProjectId\"")
+    buildConfigField("String", "FIREBASE_AUTH_DOMAIN", "\"$firebaseAuthDomain\"")
 }
