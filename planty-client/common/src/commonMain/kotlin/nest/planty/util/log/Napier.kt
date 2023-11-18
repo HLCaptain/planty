@@ -4,8 +4,9 @@ import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 
 // TODO: log based on user analytics preference
-fun initNapier() {
+fun initNapier(isDebug: Boolean = true) {
     Napier.takeLogarithm()
-    Napier.base(DebugAntilog())
-//    Napier.base(CrashlyticsAntilog())
+    if (isDebug) {
+        Napier.base(DebugAntilog())
+    }
 }

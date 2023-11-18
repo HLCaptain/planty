@@ -11,7 +11,7 @@ class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        initNapier()
+        initNapier(BuildConfig.DEBUG)
 
         startKoin {
             androidLogger()

@@ -21,10 +21,7 @@ class PlantRepository(
     private val plantsMutableStore = plantsByUserMutableStoreBuilder.store
 
     fun getPlant(uuid: String) = plantMutableStore.stream<StoreReadResponse<Plant>>(
-        StoreReadRequest.cached(
-            key = uuid,
-            refresh = true
-        )
+        StoreReadRequest.fresh(key = uuid)
     ).map {
         it.throwIfError()
         Napier.d("Read Response: $it")
@@ -52,10 +49,7 @@ class PlantRepository(
 
     fun getPlantsByUser(userUUID: String) =
         plantsMutableStore.stream<StoreReadResponse<List<Plant>>>(
-            StoreReadRequest.cached(
-                key = userUUID,
-                refresh = true
-            )
+            StoreReadRequest.fresh(key = userUUID)
         ).map {
             it.throwIfError()
             Napier.d("Read Response: $it")

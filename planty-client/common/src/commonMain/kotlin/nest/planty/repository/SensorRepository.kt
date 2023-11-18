@@ -22,10 +22,7 @@ class SensorRepository(
 
     @OptIn(ExperimentalStoreApi::class)
     fun getSensor(uuid: String) = sensorMutableStore.stream<StoreReadResponse<DomainSensor>>(
-        StoreReadRequest.cached(
-            key = uuid,
-            refresh = true
-        )
+        StoreReadRequest.fresh(key = uuid)
     ).map {
         it.throwIfError()
         Napier.d("Read Response: $it")

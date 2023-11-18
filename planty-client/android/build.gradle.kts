@@ -59,6 +59,9 @@ android {
             signingConfig = signingConfigs.getByName("release")
         }
     }
+    buildFeatures {
+        buildConfig = true
+    }
     applicationVariants.all {
         val variantName = name
         sourceSets {
