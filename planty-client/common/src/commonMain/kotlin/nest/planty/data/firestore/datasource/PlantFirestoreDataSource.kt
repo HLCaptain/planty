@@ -4,6 +4,7 @@ import dev.gitlive.firebase.firestore.FirebaseFirestore
 import dev.gitlive.firebase.firestore.where
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import nest.planty.data.firestore.model.FirestorePlant
 import nest.planty.data.network.PlantNetworkDataSource
@@ -58,7 +59,12 @@ class PlantFirestoreDataSource(
         return firestore.collection(FirestorePlant.COLLECTION_NAME)
             .document(uuid)
             .snapshots()
-            .map { it.data(FirestorePlant.serializer()) }
+            .filter { it.exists }
+            .map {
+                val data = it.data(FirestorePlant.serializer())
+                Napier.d("Fetched plant $data")
+                data
+            }
     }
 
     override suspend fun delete(uuid: String) {

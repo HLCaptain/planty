@@ -4,6 +4,7 @@ import dev.gitlive.firebase.firestore.FirebaseFirestore
 import dev.gitlive.firebase.firestore.where
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import nest.planty.data.firestore.model.FirestoreSensor
 import nest.planty.data.network.SensorNetworkDataSource
@@ -19,6 +20,7 @@ class SensorFirestoreDataSource(
             .collection(FirestoreSensor.COLLECTION_NAME)
             .document(uuid)
             .snapshots()
+            .filter { it.exists }
             .map {
                 val data = it.data(FirestoreSensor.serializer())
                 Napier.d("Fetched sensor $data")

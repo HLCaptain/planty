@@ -44,7 +44,7 @@ fun providePlantMutableStore(
     },
     sourceOfTruth = SourceOfTruth.of(
         reader = { key: String ->
-            databaseHelper.queryAsOneFlow {
+            databaseHelper.queryAsOneOrNullFlow {
                 Napier.d("User $key has the plant")
                 it.plantQueries.select(key)
             }

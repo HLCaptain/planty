@@ -40,10 +40,10 @@ fun provideSensorMutableStore(
     },
     sourceOfTruth = SourceOfTruth.of(
         reader = { key: String ->
-            databaseHelper.queryAsOneFlow {
+            databaseHelper.queryAsOneOrNullFlow {
                 Napier.d("Reading sensor at $key")
                 it.sensorQueries.select(key)
-            }.map { it.toDomainModel() }
+            }.map { it?.toDomainModel() }
         },
         writer = { key, local ->
             databaseHelper.withDatabase { db ->
