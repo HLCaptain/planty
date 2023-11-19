@@ -30,7 +30,6 @@ class SensorMutableStoreBuilder(
 }
 
 @OptIn(ExperimentalStoreApi::class)
-@Single
 fun provideSensorMutableStore(
     databaseHelper: DatabaseHelper,
     sensorNetworkDataSource: SensorNetworkDataSource,

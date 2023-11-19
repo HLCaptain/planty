@@ -35,7 +35,6 @@ class PlantsByUserMutableStoreBuilder(
 }
 
 @OptIn(ExperimentalStoreApi::class)
-@Single
 fun providePlantsByUserMutableStore(
     databaseHelper: DatabaseHelper,
     plantFirestoreDataSource: PlantFirestoreDataSource,

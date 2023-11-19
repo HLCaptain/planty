@@ -34,7 +34,6 @@ class PlantMutableStoreBuilder(
 }
 
 @OptIn(ExperimentalStoreApi::class)
-@Single
 fun providePlantMutableStore(
     databaseHelper: DatabaseHelper,
     plantNetworkDataSource: PlantNetworkDataSource,

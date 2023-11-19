@@ -30,7 +30,6 @@ class BrokerMutableStoreBuilder(
 }
 
 @OptIn(ExperimentalStoreApi::class)
-@Single
 fun provideBrokerMutableStore(
     databaseHelper: DatabaseHelper,
     brokerNetworkDataSource: BrokerNetworkDataSource,
