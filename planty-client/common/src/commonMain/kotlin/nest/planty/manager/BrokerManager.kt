@@ -12,9 +12,9 @@ import kotlinx.coroutines.flow.map
 import nest.planty.di.NamedCoroutineDispatcherIO
 import nest.planty.repository.BrokerRepository
 import nest.planty.repository.PairingBrokerRepository
-import org.koin.core.annotation.Factory
+import org.koin.core.annotation.Single
 
-@Factory
+@Single
 class BrokerManager(
     private val pairingBrokerRepository: PairingBrokerRepository,
     private val brokerRepository: BrokerRepository,

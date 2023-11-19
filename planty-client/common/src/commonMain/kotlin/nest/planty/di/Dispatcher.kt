@@ -2,8 +2,8 @@ package nest.planty.di
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import org.koin.core.annotation.Factory
 import org.koin.core.annotation.Named
+import org.koin.core.annotation.Single
 
 @Named("CoroutineDispatcherIO")
 annotation class NamedCoroutineDispatcherIO
@@ -17,14 +17,14 @@ annotation class NamedCoroutineDispatcherDefault
 /**
  * No IO dispatcher in Kotlin Coroutines Core, provide platform specific implementation
  */
-@Factory
+@Single
 @NamedCoroutineDispatcherIO
 expect fun provideDispatcherIO(): CoroutineDispatcher
 
-@Factory
+@Single
 @NamedCoroutineDispatcherMain
 expect fun provideDispatcherMain(): CoroutineDispatcher
 
-@Factory
+@Single
 @NamedCoroutineDispatcherDefault
 fun provideDispatcherDefault() = Dispatchers.Default

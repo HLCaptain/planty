@@ -1,8 +1,10 @@
 package nest.planty.manager
 
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -13,9 +15,9 @@ import nest.planty.domain.model.DomainSensor
 import nest.planty.repository.BrokerRepository
 import nest.planty.repository.PlantRepository
 import nest.planty.repository.SensorRepository
-import org.koin.core.annotation.Factory
+import org.koin.core.annotation.Single
 
-@Factory
+@Single
 class SensorManager(
     authManager: AuthManager,
     private val sensorRepository: SensorRepository,
@@ -25,10 +27,10 @@ class SensorManager(
     @NamedCoroutineDispatcherIO private val dispatcherIO: CoroutineDispatcher,
 ) {
     fun getSensorsForUser(userUUID: String) = channelFlow {
-        brokerRepository.getBrokersByUser(userUUID).collect { brokers ->
+        brokerRepository.getBrokersByUser(userUUID).collectLatest { brokers ->
             val sensorMap = mutableMapOf<String, List<DomainSensor>>()
             brokers?.forEach { broker ->
-                sensorRepository.getSensorsByBroker(broker.uuid).collect { sensors ->
+                sensorRepository.getSensorsByBroker(broker.uuid).collectLatest { sensors ->
                     sensors?.let { list ->
                         sensorMap[broker.uuid] = list
                         send(sensorMap.values.flatten().distinctBy { it.uuid })
@@ -44,6 +46,7 @@ class SensorManager(
 
     suspend fun unassignSensorFromPlant(sensorUUID: String, plantUUID: String) {
         plantRepository.getPlant(plantUUID).firstOrNull()?.let { plant ->
+            Napier.d("Unassigning sensor $sensorUUID from plant $plantUUID")
             plantRepository.upsertPlantForUser(
                 plant.copy(sensors = plant.sensors.filterNot { it == sensorUUID })
             )
@@ -52,6 +55,7 @@ class SensorManager(
 
     suspend fun assignSensorToPlant(sensorUUID: String, plantUUID: String) {
         plantRepository.getPlant(plantUUID).firstOrNull()?.let { plant ->
+            Napier.d("Assigning sensor $sensorUUID to plant $plantUUID")
             plantRepository.upsertPlantForUser(
                 plant.copy(sensors = (plant.sensors + sensorUUID).distinct())
             )

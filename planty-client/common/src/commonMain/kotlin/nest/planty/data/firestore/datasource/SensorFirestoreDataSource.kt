@@ -7,9 +7,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import nest.planty.data.firestore.model.FirestoreSensor
 import nest.planty.data.network.SensorNetworkDataSource
-import org.koin.core.annotation.Factory
+import org.koin.core.annotation.Single
 
-@Factory
+@Single
 class SensorFirestoreDataSource(
     private val firestore: FirebaseFirestore,
 ) : SensorNetworkDataSource {

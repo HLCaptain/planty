@@ -9,7 +9,6 @@ import nest.planty.data.mapping.toNetworkModel
 import nest.planty.data.network.SensorNetworkDataSource
 import nest.planty.data.sqldelight.DatabaseHelper
 import nest.planty.db.Sensor
-import nest.planty.di.NamedPlantMutableStore
 import nest.planty.domain.model.DomainSensor
 import org.koin.core.annotation.Single
 import org.mobilenativefoundation.store.store5.Converter
@@ -32,7 +31,6 @@ class SensorMutableStoreBuilder(
 
 @OptIn(ExperimentalStoreApi::class)
 @Single
-@NamedPlantMutableStore
 fun provideSensorMutableStore(
     databaseHelper: DatabaseHelper,
     sensorNetworkDataSource: SensorNetworkDataSource,

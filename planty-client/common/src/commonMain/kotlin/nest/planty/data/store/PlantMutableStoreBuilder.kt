@@ -1,15 +1,12 @@
 package nest.planty.data.store
 
 import io.github.aakira.napier.Napier
-import kotlinx.coroutines.CoroutineDispatcher
 import nest.planty.data.firestore.model.FirestorePlant
 import nest.planty.data.mapping.toLocalModel
 import nest.planty.data.mapping.toNetworkModel
 import nest.planty.data.network.PlantNetworkDataSource
 import nest.planty.data.sqldelight.DatabaseHelper
 import nest.planty.db.Plant
-import nest.planty.di.NamedCoroutineDispatcherIO
-import nest.planty.di.NamedPlantMutableStore
 import org.koin.core.annotation.Single
 import org.mobilenativefoundation.store.store5.Converter
 import org.mobilenativefoundation.store.store5.ExperimentalStoreApi
@@ -32,18 +29,15 @@ import org.mobilenativefoundation.store.store5.UpdaterResult
 class PlantMutableStoreBuilder(
     databaseHelper: DatabaseHelper,
     plantNetworkDataSource: PlantNetworkDataSource,
-    @NamedCoroutineDispatcherIO private val dispatcherIO: CoroutineDispatcher,
 ) {
-    val store = providePlantMutableStore(databaseHelper, plantNetworkDataSource, dispatcherIO)
+    val store = providePlantMutableStore(databaseHelper, plantNetworkDataSource)
 }
 
 @OptIn(ExperimentalStoreApi::class)
 @Single
-@NamedPlantMutableStore
 fun providePlantMutableStore(
     databaseHelper: DatabaseHelper,
     plantNetworkDataSource: PlantNetworkDataSource,
-    dispatcher: CoroutineDispatcher,
 ) = MutableStoreBuilder.from(
     fetcher = Fetcher.ofFlow { key ->
         Napier.d("Fetching plant with key $key")

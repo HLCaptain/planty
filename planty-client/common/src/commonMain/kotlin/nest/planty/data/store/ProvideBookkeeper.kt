@@ -35,7 +35,7 @@ fun<Key> provideBookkeeper(
     clearAll = {
         databaseHelper.withDatabase {
             Napier.d("Clearing all last failed syncs")
-            it.dataHistoryQueries.deleteAll()
+            it.dataHistoryQueries.deleteAllFromTable(originTable)
         }
         true
     }

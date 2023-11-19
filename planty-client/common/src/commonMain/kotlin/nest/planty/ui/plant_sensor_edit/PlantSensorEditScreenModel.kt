@@ -2,6 +2,7 @@ package nest.planty.ui.plant_sensor_edit
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -31,6 +32,9 @@ class PlantSensorEditScreenModel(
         sensorManager.availableSensors,
         assignedSensors
     ) { availableSensors, assignedSensors ->
+        // Pretty print
+        Napier.d("Available sensors: $availableSensors")
+        Napier.d("Assigned sensors: $assignedSensors")
         availableSensors.minus(assignedSensors.values.flatten().distinct().toSet()).groupBy { it.ownerBroker }
     }.stateIn(
         screenModelScope,

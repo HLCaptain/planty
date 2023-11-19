@@ -14,24 +14,26 @@ import nest.planty.di.NamedCoroutineDispatcherIO
 import nest.planty.repository.PlantRepository
 import nest.planty.repository.SensorRepository
 import nest.planty.util.log.randomUUID
-import org.koin.core.annotation.Factory
+import org.koin.core.annotation.Single
 
-@Factory
+@Single
 class PlantManager(
     private val authManager: AuthManager,
     private val plantRepository: PlantRepository,
     private val sensorRepository: SensorRepository,
     @NamedCoroutineDispatcherIO private val dispatcherIO: CoroutineDispatcher,
 ) {
+
     fun getPlant(uuid: String) = channelFlow {
+        Napier.d("Getting plant $uuid")
         plantRepository.getPlant(uuid).collect { plant ->
+            Napier.d("Plant is $plant")
             val sensors = plant?.sensors?.map { sensorUUID ->
                 sensorRepository.getSensor(sensorUUID).firstOrNull()
             } ?: emptyList()
-            Napier.d("Plant is $plant")
             send(plant?.toDomainModel(sensors.filterNotNull()))
         }
-    }.flowOn(dispatcherIO)
+    }
 
     suspend fun addPlant(
         plantName: String? = null,

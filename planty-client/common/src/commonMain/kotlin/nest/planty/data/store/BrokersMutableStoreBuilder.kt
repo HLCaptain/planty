@@ -9,7 +9,6 @@ import nest.planty.data.mapping.toNetworkModel
 import nest.planty.data.network.BrokerNetworkDataSource
 import nest.planty.data.sqldelight.DatabaseHelper
 import nest.planty.db.Broker
-import nest.planty.di.NamedPlantMutableStore
 import nest.planty.domain.model.DomainBroker
 import org.koin.core.annotation.Single
 import org.mobilenativefoundation.store.store5.Converter
@@ -32,7 +31,6 @@ class BrokersMutableStoreBuilder(
 
 @OptIn(ExperimentalStoreApi::class)
 @Single
-@NamedPlantMutableStore
 fun provideBrokersMutableStore(
     databaseHelper: DatabaseHelper,
     brokerNetworkDataSource: BrokerNetworkDataSource,

@@ -7,9 +7,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import nest.planty.data.firestore.model.FirestoreBroker
 import nest.planty.data.network.BrokerNetworkDataSource
-import org.koin.core.annotation.Factory
+import org.koin.core.annotation.Single
 
-@Factory
+@Single
 class BrokerFirestoreDataSource(
     private val firestore: FirebaseFirestore,
 ) : BrokerNetworkDataSource {

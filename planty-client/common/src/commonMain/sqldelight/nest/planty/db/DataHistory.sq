@@ -20,5 +20,6 @@ delete:
 DELETE FROM DataHistory
 WHERE uuid = ?;
 
-deleteAll:
-DELETE FROM DataHistory;
+deleteAllFromTable:
+DELETE FROM DataHistory
+WHERE fromTable = ?;

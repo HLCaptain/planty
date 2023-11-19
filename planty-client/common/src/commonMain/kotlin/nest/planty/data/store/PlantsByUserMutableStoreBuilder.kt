@@ -8,7 +8,6 @@ import nest.planty.data.mapping.toLocalModel
 import nest.planty.data.mapping.toNetworkModel
 import nest.planty.data.sqldelight.DatabaseHelper
 import nest.planty.db.Plant
-import nest.planty.di.NamedPlantsMutableStore
 import org.koin.core.annotation.Single
 import org.mobilenativefoundation.store.store5.Converter
 import org.mobilenativefoundation.store.store5.ExperimentalStoreApi
@@ -36,7 +35,7 @@ class PlantsByUserMutableStoreBuilder(
 }
 
 @OptIn(ExperimentalStoreApi::class)
-@NamedPlantsMutableStore
+@Single
 fun providePlantsByUserMutableStore(
     databaseHelper: DatabaseHelper,
     plantFirestoreDataSource: PlantFirestoreDataSource,
