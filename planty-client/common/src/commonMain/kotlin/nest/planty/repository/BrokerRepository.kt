@@ -6,13 +6,13 @@ import kotlinx.coroutines.flow.map
 import nest.planty.data.store.BrokerMutableStoreBuilder
 import nest.planty.data.store.BrokersMutableStoreBuilder
 import nest.planty.domain.model.DomainBroker
-import org.koin.core.annotation.Factory
+import org.koin.core.annotation.Single
 import org.mobilenativefoundation.store.store5.ExperimentalStoreApi
 import org.mobilenativefoundation.store.store5.StoreReadRequest
 import org.mobilenativefoundation.store.store5.StoreReadResponse
 import org.mobilenativefoundation.store.store5.StoreWriteRequest
 
-@Factory
+@Single
 class BrokerRepository(
     brokerMutableStoreBuilder: BrokerMutableStoreBuilder,
     brokersMutableStoreBuilder: BrokersMutableStoreBuilder,

@@ -1,9 +1,9 @@
 package nest.planty.repository
 
 import nest.planty.data.network.PairingBrokerNetworkDataSource
-import org.koin.core.annotation.Factory
+import org.koin.core.annotation.Single
 
-@Factory
+@Single
 class PairingBrokerRepository(
     private val pairingBrokerNetworkDataSource: PairingBrokerNetworkDataSource,
 ) {

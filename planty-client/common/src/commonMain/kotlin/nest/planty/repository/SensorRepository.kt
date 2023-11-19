@@ -6,12 +6,12 @@ import kotlinx.coroutines.flow.map
 import nest.planty.data.store.SensorMutableStoreBuilder
 import nest.planty.data.store.SensorsMutableStoreBuilder
 import nest.planty.domain.model.DomainSensor
-import org.koin.core.annotation.Factory
+import org.koin.core.annotation.Single
 import org.mobilenativefoundation.store.store5.ExperimentalStoreApi
 import org.mobilenativefoundation.store.store5.StoreReadRequest
 import org.mobilenativefoundation.store.store5.StoreReadResponse
 
-@Factory
+@Single
 class SensorRepository(
     sensorMutableStoreBuilder: SensorMutableStoreBuilder,
     sensorsMutableStoreBuilder: SensorsMutableStoreBuilder,
