@@ -4,6 +4,7 @@ import dev.gitlive.firebase.firestore.FirebaseFirestore
 import dev.gitlive.firebase.firestore.where
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import nest.planty.data.firestore.model.FirestoreBroker
@@ -26,6 +27,7 @@ class BrokerFirestoreDataSource(
                 Napier.d("Fetched broker $data")
                 data
             }
+            .catch { Napier.e("Error fetching broker $uuid", it) }
     }
 
     override fun fetchByUser(userUUID: String): Flow<List<FirestoreBroker>> {
@@ -39,6 +41,7 @@ class BrokerFirestoreDataSource(
                 Napier.d("Fetched broker $data")
                 data
             } }
+            .catch { Napier.e("Error fetching brokers for user $userUUID", it) }
     }
 
     override suspend fun upsert(broker: FirestoreBroker) {

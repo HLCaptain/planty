@@ -4,6 +4,7 @@ import dev.gitlive.firebase.firestore.FirebaseFirestore
 import dev.gitlive.firebase.firestore.where
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import nest.planty.data.firestore.model.FirestorePlant
@@ -26,6 +27,7 @@ class PlantFirestoreDataSource(
                 Napier.d("Fetched plant $data")
                 data
             } }
+            .catch { Napier.e("Error fetching plants for user $userUUID", it) }
     }
 
     override suspend fun upsert(plant: FirestorePlant) {
@@ -65,6 +67,7 @@ class PlantFirestoreDataSource(
                 Napier.d("Fetched plant $data")
                 data
             }
+            .catch { Napier.e("Error fetching plant $uuid", it) }
     }
 
     override suspend fun delete(uuid: String) {
