@@ -47,7 +47,7 @@ android {
         applicationId = "nest.planty"
         minSdk = 21
         targetSdk = 34
-        versionCode = 4
+        versionCode = 5
         versionName = project.version.toString()
     }
     buildTypes {
