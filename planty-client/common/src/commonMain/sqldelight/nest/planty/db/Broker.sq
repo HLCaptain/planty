@@ -3,7 +3,7 @@ import kotlin.collections.List;
 
 CREATE TABLE Broker(
     uuid TEXT PRIMARY KEY NOT NULL UNIQUE,
-    ownerUUID TEXT NOT NULL,
+    ownerUUID TEXT,
     sensors TEXT AS List<String> NOT NULL
 );
 
