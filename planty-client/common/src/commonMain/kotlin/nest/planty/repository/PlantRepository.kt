@@ -48,7 +48,7 @@ class PlantRepository(
         }
     }
 
-    suspend fun upsertPlantForUser(plant: Plant) {
+    suspend fun upsertPlant(plant: Plant) {
         plantMutableStore.write(
             StoreWriteRequest.of(
                 key = plant.uuid,

@@ -47,7 +47,7 @@ class PlantManager(
     ) {
         val user = authManager.signedInUser.firstOrNull() ?: return
         Napier.d("Adding plant for user")
-        plantRepository.upsertPlantForUser(
+        plantRepository.upsertPlant(
             Plant(
                 uuid = randomUUID(),
                 ownerUUID = user.uid,
@@ -80,7 +80,7 @@ class PlantManager(
             .filterNot { it.second }
             .map { it.first }.firstOrNull()
             ?.let { plant ->
-                plantRepository.upsertPlantForUser(
+                plantRepository.upsertPlant(
                     plant.copy(
                         desiredEnvironment = plant.desiredEnvironment + (name to value.toString())
                     )
@@ -92,11 +92,16 @@ class PlantManager(
         plantUUID: String,
         floatDesiredEnvironmentVariableMap: Map<String, Double>,
     ) {
+        Napier.d("Setting desired environment variable map $floatDesiredEnvironmentVariableMap")
+        if (floatDesiredEnvironmentVariableMap.isEmpty()) {
+            Napier.d("Empty map, returning")
+            return
+        }
         plantRepository.getPlant(plantUUID)
             .filterNot { it.second }
             .map { it.first }.firstOrNull()
             ?.let { plant ->
-                plantRepository.upsertPlantForUser(
+                plantRepository.upsertPlant(
                     plant.copy(
                         desiredEnvironment = plant.desiredEnvironment + floatDesiredEnvironmentVariableMap.mapValues { it.value.toString() }
                     )

@@ -117,22 +117,16 @@ fun TextFieldSetting(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Crossfade(
-                modifier = Modifier.animateContentSize(),
-                targetState = value,
-                label = "Setting text"
-            ) {
-                TextField(
-                    value = value,
-                    onValueChange = setValue,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Done
-                    )
+            TextField(
+                value = value,
+                onValueChange = setValue,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done
+                )
 //                    style = textStyle,
 //                    color = MaterialTheme.colorScheme.onSurface,
-                )
-            }
+            )
         }
     }
 }

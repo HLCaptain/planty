@@ -44,18 +44,23 @@ class PlantDetailsScreen(private val plantUUID: String) : Screen {
         val plant by screenModel.plant.collectAsState()
         val floatDesiredEnvironmentVariables by screenModel.desiredFloatingEnvironmentVariables.collectAsState()
         val navigator = LocalNavigator.currentOrThrow
-        var floatDesiredEnvironmentVariableMap by rememberSaveable { mutableStateOf(floatDesiredEnvironmentVariables.mapValues { it.value.toString() }) }
+        var floatDesiredEnvironmentVariableMap by rememberSaveable { mutableStateOf(emptyMap<String, String>()) }
         var firstStart by rememberSaveable { mutableStateOf(true) }
+        LaunchedEffect(floatDesiredEnvironmentVariables) {
+            floatDesiredEnvironmentVariableMap = floatDesiredEnvironmentVariables.mapValues { it.value.toString() }
+        }
         LaunchedEffect(floatDesiredEnvironmentVariableMap) {
             if (firstStart) {
                 firstStart = false
             } else {
-                delay(1000)
-                screenModel.setDesiredFloatingEnvironmentVariableMap(
-                    floatDesiredEnvironmentVariableMap
-                        .filterValues { it.toDoubleOrNull() != null }
-                        .mapValues { it.value.toDouble() }
-                )
+                delay(2500)
+                val changedValidVariables = floatDesiredEnvironmentVariableMap
+                    .filter {
+                        val doubleValue = it.value.toDoubleOrNull()
+                        doubleValue != null && floatDesiredEnvironmentVariables[it.key] != doubleValue
+                    }
+                    .mapValues { it.value.toDouble() }
+                screenModel.setDesiredFloatingEnvironmentVariableMap(changedValidVariables)
             }
         }
         PlantDetailsScreenContent(
@@ -77,43 +82,46 @@ class PlantDetailsScreen(private val plantUUID: String) : Screen {
         editSensors: () -> Unit = {},
         setEnvironmentVariable: (String, String) -> Unit
     ) {
-        Crossfade(
+        Column(
             modifier = modifier,
-            targetState = plant to floatDesiredEnvironmentVariables
-        ) { (plant, floatDesiredEnvironmentVariables) ->
-            if (plant == null) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 100.dp)
-                ) {
-                    CircularProgressIndicator()
-                }
-            } else {
-                // Plant Name (Title)
-                // Owned by ownerUUID (Subtitle)
-                // Plant Description (Body)
-                // Attached sensors (List, item opens to a detail view for a sensor)
-                // Desired environment info (List, item opens to an editing view)
-                // Monitoring sensorEvents (Item UI, opens to a detail view)
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    PlantTitle(plant.name ?: Res.string.unknown)
-                    PlantOwner(plant.ownerUUID)
-                    PlantDescription(plant.description ?: Res.string.unknown)
-                    AttachedSensors(
-                        sensorsTypes = plant.sensors,
-                        editSensors = editSensors
-                    )
-                    DesiredEnvironmentList(
-                        floatingPointVariables = floatDesiredEnvironmentVariables,
-                        setEnvironmentVariable = { name, value ->
-                            setEnvironmentVariable(name, value)
-                        }
-                    )
+        ) {
+            Crossfade(
+                targetState = plant
+            ) { plant ->
+                if (plant == null) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 100.dp)
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                } else {
+                    // Plant Name (Title)
+                    // Owned by ownerUUID (Subtitle)
+                    // Plant Description (Body)
+                    // Attached sensors (List, item opens to a detail view for a sensor)
+                    // Desired environment info (List, item opens to an editing view)
+                    // Monitoring sensorEvents (Item UI, opens to a detail view)
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        PlantTitle(plant.name ?: Res.string.unknown)
+                        PlantOwner(plant.ownerUUID)
+                        PlantDescription(plant.description ?: Res.string.unknown)
+                        AttachedSensors(
+                            sensorsTypes = plant.sensors,
+                            editSensors = editSensors
+                        )
+                    }
                 }
             }
+            DesiredEnvironmentList(
+                floatingPointVariables = floatDesiredEnvironmentVariables,
+                setEnvironmentVariable = { name, value ->
+                    setEnvironmentVariable(name, value)
+                }
+            )
         }
     }
 

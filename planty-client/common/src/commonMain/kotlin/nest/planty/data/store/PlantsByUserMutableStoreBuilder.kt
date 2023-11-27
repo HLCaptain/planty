@@ -60,7 +60,7 @@ fun providePlantsByUserMutableStore(
                         db.plantQueries.upsert(it)
                     }
                 }
-                local.forEach { plantFirestoreDataSource.upsert(it.toNetworkModel()) }
+//                local.forEach { plantFirestoreDataSource.upsert(it.toNetworkModel()) }
             }
         },
         delete = { key ->
