@@ -6,7 +6,7 @@ import nest.planty.domain.model.DomainSensorEvent
 val mapAdapter = object : ColumnAdapter<Map<String, String>, String> {
     override fun decode(databaseValue: String): Map<String, String> {
         if (databaseValue.isEmpty()) return emptyMap()
-        return databaseValue.split(",").associate {
+        return databaseValue.split(",").filter { it.isEmpty() }.associate {
             val (key, value) = it.split("=")
             key to value
         }

@@ -4,6 +4,7 @@ import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
@@ -68,7 +69,39 @@ class PlantManager(
         authManager.signedInUser.firstOrNull()?.let {
             plantRepository.deletePlantsForUser(it.uid)
         }
+    }
 
+    suspend fun setDesiredEnvironmentVariable(
+        plantUUID: String,
+        name: String,
+        value: Double,
+    ) {
+        plantRepository.getPlant(plantUUID)
+            .filterNot { it.second }
+            .map { it.first }.firstOrNull()
+            ?.let { plant ->
+                plantRepository.upsertPlantForUser(
+                    plant.copy(
+                        desiredEnvironment = plant.desiredEnvironment + (name to value.toString())
+                    )
+                )
+            }
+    }
+
+    suspend fun setDesiredEnvironmentVariableMap(
+        plantUUID: String,
+        floatDesiredEnvironmentVariableMap: Map<String, Double>,
+    ) {
+        plantRepository.getPlant(plantUUID)
+            .filterNot { it.second }
+            .map { it.first }.firstOrNull()
+            ?.let { plant ->
+                plantRepository.upsertPlantForUser(
+                    plant.copy(
+                        desiredEnvironment = plant.desiredEnvironment + floatDesiredEnvironmentVariableMap.mapValues { it.value.toString() }
+                    )
+                )
+            }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)

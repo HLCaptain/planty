@@ -15,8 +15,12 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -24,10 +28,12 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import kotlinx.coroutines.delay
 import nest.planty.Res
 import nest.planty.domain.model.DomainPlant
 import nest.planty.domain.model.DomainSensor
 import nest.planty.ui.components.MenuButton
+import nest.planty.ui.components.TextFieldSetting
 import nest.planty.ui.plant_sensor_edit.PlantSensorEditScreen
 import org.koin.core.parameter.parametersOf
 
@@ -36,11 +42,30 @@ class PlantDetailsScreen(private val plantUUID: String) : Screen {
     override fun Content() {
         val screenModel = getScreenModel<PlantDetailsScreenModel> { parametersOf(plantUUID) }
         val plant by screenModel.plant.collectAsState()
+        val floatDesiredEnvironmentVariables by screenModel.desiredFloatingEnvironmentVariables.collectAsState()
         val navigator = LocalNavigator.currentOrThrow
+        var floatDesiredEnvironmentVariableMap by rememberSaveable { mutableStateOf(floatDesiredEnvironmentVariables.mapValues { it.value.toString() }) }
+        var firstStart by rememberSaveable { mutableStateOf(true) }
+        LaunchedEffect(floatDesiredEnvironmentVariableMap) {
+            if (firstStart) {
+                firstStart = false
+            } else {
+                delay(1000)
+                screenModel.setDesiredFloatingEnvironmentVariableMap(
+                    floatDesiredEnvironmentVariableMap
+                        .filterValues { it.toDoubleOrNull() != null }
+                        .mapValues { it.value.toDouble() }
+                )
+            }
+        }
         PlantDetailsScreenContent(
             modifier = Modifier.padding(8.dp),
             plant = plant,
-            editSensors = { navigator.push(PlantSensorEditScreen(plantUUID)) }
+            editSensors = { navigator.push(PlantSensorEditScreen(plantUUID)) },
+            setEnvironmentVariable = { name, value ->
+                floatDesiredEnvironmentVariableMap += name to value
+            },
+            floatDesiredEnvironmentVariables = floatDesiredEnvironmentVariableMap
         )
     }
 
@@ -48,13 +73,15 @@ class PlantDetailsScreen(private val plantUUID: String) : Screen {
     fun PlantDetailsScreenContent(
         modifier: Modifier = Modifier,
         plant: DomainPlant?,
+        floatDesiredEnvironmentVariables: Map<String, String>,
         editSensors: () -> Unit = {},
+        setEnvironmentVariable: (String, String) -> Unit
     ) {
         Crossfade(
             modifier = modifier,
-            targetState = plant
-        ) {
-            if (it == null) {
+            targetState = plant to floatDesiredEnvironmentVariables
+        ) { (plant, floatDesiredEnvironmentVariables) ->
+            if (plant == null) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -72,12 +99,18 @@ class PlantDetailsScreen(private val plantUUID: String) : Screen {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    PlantTitle(it.name ?: Res.string.unknown)
-                    PlantOwner(it.ownerUUID)
-                    PlantDescription(it.description ?: Res.string.unknown)
+                    PlantTitle(plant.name ?: Res.string.unknown)
+                    PlantOwner(plant.ownerUUID)
+                    PlantDescription(plant.description ?: Res.string.unknown)
                     AttachedSensors(
-                        sensorsTypes = it.sensors,
+                        sensorsTypes = plant.sensors,
                         editSensors = editSensors
+                    )
+                    DesiredEnvironmentList(
+                        floatingPointVariables = floatDesiredEnvironmentVariables,
+                        setEnvironmentVariable = { name, value ->
+                            setEnvironmentVariable(name, value)
+                        }
                     )
                 }
             }
@@ -125,6 +158,35 @@ class PlantDetailsScreen(private val plantUUID: String) : Screen {
                 SensorItem(sensor)
             }
         }
+    }
+
+    @Composable
+    fun DesiredEnvironmentList(
+        floatingPointVariables: Map<String, String>,
+        setEnvironmentVariable: (String, String) -> Unit,
+    ) {
+        LazyColumn {
+            items(floatingPointVariables.keys.toList()) { name ->
+                DesiredEnvironmentItem(
+                    name = name,
+                    value = floatingPointVariables[name]!!,
+                    setValue = { setEnvironmentVariable(name, it) }
+                )
+            }
+        }
+    }
+
+    @Composable
+    fun DesiredEnvironmentItem(
+        name: String,
+        value: String,
+        setValue: (String) -> Unit,
+    ) {
+        TextFieldSetting(
+            settingName = name,
+            value = value,
+            setValue = setValue,
+        )
     }
 
     @Composable
