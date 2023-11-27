@@ -1,6 +1,6 @@
 # Data and user flows
 
-This document lists all the data schemes, data sources and user flows of the app in detail.
+This document lists all the data schemes used in the Fireabse Firestore database, data sources and user flows of the app in detail.
 
 ## Data
 
