@@ -39,10 +39,10 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import nest.planty.Res
 import nest.planty.db.Plant
-import nest.planty.getPlatformName
 import nest.planty.ui.components.MenuButton
 import nest.planty.ui.dialog.PlantyDialog
-import nest.planty.ui.pairing.PairingScreen
+import nest.planty.ui.paired_brokers.PairedBrokersScreen
+import nest.planty.ui.pairing_brokers.PairingBrokerScreen
 import nest.planty.ui.plant_details.PlantDetailsScreen
 import nest.planty.ui.profile.ProfileDialogScreen
 
@@ -72,37 +72,48 @@ class HomeScreen : Screen {
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text(text = Res.string.hello_x.format(getPlatformName()))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = Res.string.app_name,
+                            style = MaterialTheme.typography.headlineLarge
+                        )
 
-                    PairBrokerButton(onClick = { navigator.push(PairingScreen()) })
+                        var isProfileDialogShowing by rememberSaveable { mutableStateOf(false) }
+                        PlantyDialog(
+                            startScreen = ProfileDialogScreen(),
+                            isDialogOpen = isProfileDialogShowing,
+                            onDialogClosed = { isProfileDialogShowing = false }
+                        )
 
-                    var isProfileDialogShowing by rememberSaveable { mutableStateOf(false) }
-                    PlantyDialog(
-                        startScreen = ProfileDialogScreen(),
-                        isDialogOpen = isProfileDialogShowing,
-                        onDialogClosed = { isProfileDialogShowing = false }
-                    )
-
-                    Button(onClick = { isProfileDialogShowing = true }) {
-                        Text(Res.string.profile)
+                        Button(onClick = { isProfileDialogShowing = true }) {
+                            Text(Res.string.profile)
+                        }
                     }
 
                     val isUserSignedIn by screenModel.isUserSignedIn.collectAsState()
                     AnimatedVisibility(
                         visible = isUserSignedIn
                     ) {
-                        AddPlantForm(
-                            addPlant = { name, description ->
-                                screenModel.addPlant(name, description)
-                            }
-                        )
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            PairBrokerButton(onClick = { navigator.push(PairingBrokerScreen()) })
+                            PairedBrokersButton(onClick = { navigator.push(PairedBrokersScreen()) })
+                            AddPlantForm(
+                                addPlant = { name, description ->
+                                    screenModel.addPlant(name, description)
+                                }
+                            )
+                            PlantList(
+                                plants = plants,
+                                onSelectPlant = { navigator.push(PlantDetailsScreen(it)) },
+                                deletePlant = { screenModel.deletePlant(it) },
+                            )
+                        }
                     }
-
-                    PlantList(
-                        plants = plants,
-                        onSelectPlant = { navigator.push(PlantDetailsScreen(it)) },
-                        deletePlant = { screenModel.deletePlant(it) },
-                    )
                 }
             }
         }
@@ -117,7 +128,10 @@ class HomeScreen : Screen {
         ) {
             var plantName by rememberSaveable { mutableStateOf("") }
             var plantDescription by rememberSaveable { mutableStateOf("") }
-            Text(text = Res.string.add_plant)
+            Text(
+                text = Res.string.add_plant,
+                style = MaterialTheme.typography.headlineLarge
+            )
             TextField(
                 value = plantName,
                 onValueChange = { plantName = it },
@@ -151,7 +165,10 @@ class HomeScreen : Screen {
             targetState = plants.isEmpty(),
         ) {
             if (it) {
-                Text(Res.string.empty_plant_list)
+                Text(
+                    text = Res.string.empty_plant_list,
+                    style = MaterialTheme.typography.headlineLarge
+                )
             } else {
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -218,6 +235,16 @@ class HomeScreen : Screen {
         MenuButton(
             onClick = onClick,
             text = Res.string.pair_broker
+        )
+    }
+
+    @Composable
+    fun PairedBrokersButton(
+        onClick: () -> Unit,
+    ) {
+        MenuButton(
+            onClick = onClick,
+            text = Res.string.paired_brokers
         )
     }
 }

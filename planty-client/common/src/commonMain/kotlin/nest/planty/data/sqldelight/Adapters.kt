@@ -6,14 +6,14 @@ import nest.planty.domain.model.DomainSensorEvent
 val mapAdapter = object : ColumnAdapter<Map<String, String>, String> {
     override fun decode(databaseValue: String): Map<String, String> {
         if (databaseValue.isEmpty()) return emptyMap()
-        return databaseValue.split(",").associate {
+        return databaseValue.split(",").filter { it.isNotBlank() }.associate {
             val (key, value) = it.split("=")
             key to value
         }
     }
 
     override fun encode(value: Map<String, String>): String {
-        return value.map { "${it.key},${it.value}" }.joinToString(",")
+        return value.map { "${it.key}=${it.value}" }.joinToString(",")
     }
 }
 

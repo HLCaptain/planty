@@ -4,6 +4,7 @@ import io.github.aakira.napier.Napier
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.dropWhile
+import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -28,6 +29,13 @@ class BrokerManager(
             ) { it.filterNotNull() }
         }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val ownedBrokers = authManager.signedInUser.flatMapLatest { user ->
+        user?.uid?.let {
+            brokerRepository.getBrokersByUser(it)
+        }?.filterNot { it.second }?.map { it.first } ?: flowOf(emptyList())
+    }
+
     suspend fun ownBroker(brokerUUID: String) {
         authManager.signedInUser.map { it?.uid }.first()?.let { userUUID ->
             brokerRepository.getBroker(brokerUUID).first { !it.second }.let { (brokerToOwn, _) ->
@@ -35,6 +43,15 @@ class BrokerManager(
                 Napier.d("User $userUUID owns broker $brokerUUID")
                 pairingBrokerRepository.deletePairingBroker(brokerUUID)
                 Napier.d("Broker $brokerUUID is not pairing anymore")
+            }
+        }
+    }
+
+    suspend fun disownBroker(brokerUUID: String) {
+        authManager.signedInUser.map { it?.uid }.first()?.let { userUUID ->
+            brokerRepository.getBroker(brokerUUID).first { !it.second }.let { (brokerToDisown, _) ->
+                brokerToDisown?.copy(ownerUUID = null)?.let { brokerRepository.upsertBroker(it) }
+                Napier.d("User $userUUID disowns broker $brokerUUID")
             }
         }
     }

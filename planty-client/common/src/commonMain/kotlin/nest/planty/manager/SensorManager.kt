@@ -48,7 +48,7 @@ class SensorManager(
     suspend fun unassignSensorFromPlant(sensorUUID: String, plantUUID: String) {
         plantRepository.getPlant(plantUUID).first { !it.second }.first?.let { plant ->
             Napier.d("Unassigning sensor $sensorUUID from plant $plantUUID")
-            plantRepository.upsertPlantForUser(
+            plantRepository.upsertPlant(
                 plant.copy(sensors = plant.sensors.filterNot { it == sensorUUID })
             )
         }
@@ -57,7 +57,7 @@ class SensorManager(
     suspend fun assignSensorToPlant(sensorUUID: String, plantUUID: String) {
         plantRepository.getPlant(plantUUID).first { !it.second }.first?.let { plant ->
             Napier.d("Assigning sensor $sensorUUID to plant $plantUUID")
-            plantRepository.upsertPlantForUser(
+            plantRepository.upsertPlant(
                 plant.copy(sensors = (plant.sensors + sensorUUID).distinct())
             )
         }

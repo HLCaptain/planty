@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <resources>
-    <string name="app_name">MR</string>
+    <string name="app_name">Planty</string>
     <string name="hello_world">Hello world!</string>
     <string name="hello_x">Hello ${name}!</string>
     <plurals name="clicked_x_times">
@@ -41,6 +41,13 @@
     <string name="no_available_sensors">No available sensors</string>
     <string name="assign_sensor">Assign</string>
     <string name="unassign_sensor">Unassign</string>
+    <string name="brokers">Brokers</string>
+    <string name="paired_brokers">Paired brokers</string>
     <string name="pairing_brokers">Pairing brokers</string>
     <string name="pair_broker">Pair broker</string>
+    <string name="unpair_broker">Unpair broker</string>
+    <string name="no_paired_brokers">No paired brokers</string>
+    <string name="no_available_brokers">No available brokers</string>
+    <string name="on">On</string>
+    <string name="off">Off</string>
 </resources>
