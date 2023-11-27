@@ -43,3 +43,7 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+### Configuration files ###
+**/google-services.json
+**/*.keystore
