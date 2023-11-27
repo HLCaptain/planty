@@ -29,10 +29,10 @@ Apart from that, the python script is to be loaded and started, maybe set up to 
 ```bash
 #!/bin/bash
 
-# Install Python3, pip, and Mosquitto
+# Install Python3, pip, and requirements
 apt update
 apt install python3 pip mosquitto -y
-pip install paho-mqtt
+pip install -r requirements.txt
 
 # Navigate to Mosquitto certificates directory
 cd /etc/mosquitto/certs
@@ -74,3 +74,14 @@ mosquitto_passwd -U /etc/mosquitto/password_file
 # Restart Mosquitto to apply the changes
 sudo systemctl restart mosquitto
 ```
+The broker also needs a firestore certification key, and it should placed in the same folder as the broker with "./planty-firebase-key.json" file name.
+
+# Starting the broker
+
+<br> After installing and setting up the requiered processes, the broker can be started with the following command:
+```
+python3 broker.py
+```
+The broker has a console interface, and will ask for it's name every time it is started. The name does not have to be a new name, it can also start an existing broker from the firestore database, and manage it's processes as well.
+<br> The broker checks if the pairing process is done with the client, and if not, it starts the pairing process. After the client is connected to the broker, the broker starts the MQTT handler processes in the background. The broker can be closed with a "Ctrl+C" at any time, or after it is properly started and paired, with a simple "Enter" key, it will handle the proper stopping process for the background threads in both cases.
+<br> The broker syncronises it's contents and values with the Firestore database. The broker adds a light sensor, a water sensor, and a temperature sensor to itself when it's created, and it can monitor the plants and collect the currently set threshold for each of it's sensors, and can set the (also fixed 3) actuators according to these thresholds. These thresholds are None by default when a new broker is created, which means that the broker actuators do nothing, because there are no thresholds. This is also the case when all the plants are deleted in the client which contained a threshold to a specific sensor. So in this case too, the sensor has no threshold value and will not do anything with the actuator that can influance the sensord incoming data.
