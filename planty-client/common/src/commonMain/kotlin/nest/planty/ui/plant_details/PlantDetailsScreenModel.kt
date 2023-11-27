@@ -30,7 +30,7 @@ class PlantDetailsScreenModel(
             ?.associate { sensor -> sensor.type to 0.0 }
             ?.plus(
                 plant.desiredEnvironment
-                    .filter { it.value.toDoubleOrNull() != null }
+                    .filter { entry -> entry.value.toDoubleOrNull() != null && plant.sensors.any { it.type == entry.key } }
                     .mapValues { it.value.toDouble() }
             ) ?: emptyMap()
     }.stateIn(
