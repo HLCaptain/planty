@@ -1,4 +1,4 @@
-package nest.planty.ui.pairing
+package nest.planty.ui.pairing_brokers
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
@@ -11,7 +11,7 @@ import nest.planty.manager.BrokerManager
 import org.koin.core.annotation.Factory
 
 @Factory
-class PairingScreenModel(
+class PairingBrokerScreenModel(
     private val brokerManager: BrokerManager,
     @NamedCoroutineDispatcherIO private val dispatcherIO: CoroutineDispatcher,
 ) : ScreenModel {

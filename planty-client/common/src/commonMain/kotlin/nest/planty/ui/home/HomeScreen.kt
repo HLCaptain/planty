@@ -42,7 +42,8 @@ import nest.planty.db.Plant
 import nest.planty.getPlatformName
 import nest.planty.ui.components.MenuButton
 import nest.planty.ui.dialog.PlantyDialog
-import nest.planty.ui.pairing.PairingScreen
+import nest.planty.ui.paired_brokers.PairedBrokersScreen
+import nest.planty.ui.pairing_brokers.PairingBrokerScreen
 import nest.planty.ui.plant_details.PlantDetailsScreen
 import nest.planty.ui.profile.ProfileDialogScreen
 
@@ -74,7 +75,9 @@ class HomeScreen : Screen {
                 ) {
                     Text(text = Res.string.hello_x.format(getPlatformName()))
 
-                    PairBrokerButton(onClick = { navigator.push(PairingScreen()) })
+                    PairBrokerButton(onClick = { navigator.push(PairingBrokerScreen()) })
+
+                    PairedBrokersButton(onClick = { navigator.push(PairedBrokersScreen()) })
 
                     var isProfileDialogShowing by rememberSaveable { mutableStateOf(false) }
                     PlantyDialog(
@@ -218,6 +221,16 @@ class HomeScreen : Screen {
         MenuButton(
             onClick = onClick,
             text = Res.string.pair_broker
+        )
+    }
+
+    @Composable
+    fun PairedBrokersButton(
+        onClick: () -> Unit,
+    ) {
+        MenuButton(
+            onClick = onClick,
+            text = Res.string.paired_brokers
         )
     }
 }

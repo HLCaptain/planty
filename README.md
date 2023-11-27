@@ -6,23 +6,28 @@ It consists of a [multiplatform client app](planty-client/README.md) and a [sens
 
 ## Installation
 
-There are multiple ways to run the client app for multiple platforms.
+There are multiple ways to run the client app for multiple platforms. See more in [client documentation](planty-client/README.md).
 
-### Android (WIP)
+Only Android is supported at the moment due to time limitations.
+
+### Android
 
 - Download Planty APK from [here](https://github.com/HLCaptain/planty/releases/latest).
 - Install the APK on your Android device.
 
 ### Web (WIP)
 
-- Go to [this](https://planty-frontend.herokuapp.com/) website. (Not a real website yet)
+Planty client is not yet available on the web.
 
 ### Desktop (JVM) (WIP)
 
-- Download the executable from [here](https://github.com/HLCaptain/planty/releases/latest).
-- Run the jar file with `java -jar planty.jar`. (Not a real jar file yet)
+Planty client is not yet available on the desktop.
 
 ## Usage
+
+See [How to use Planty App](docs/HOW_TO_USE_PLANTY_APP.md) for more information.
+
+With the app, you can:
 
 - Add/remove sensors
 - Assign sensors to plants
