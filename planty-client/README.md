@@ -13,15 +13,15 @@ Planty's architecture aims to be as simple as possible, while still being able t
 
 ### Model-View-ViewModel
 
-The client is built using the Model-View-ViewModel (MVVM) architecture:
+The client is built using a slightly modified version of the Model-View-ViewModel (MVVM) architecture:
 
 ![MVVM Diagram](assets/uml/mvvm-arch.svg)
 
-- `View`: The View is responsible for displaying the data to the user and for handling user input. It is implemented using the [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/) framework.
-- `ViewModel`: The ViewModel is responsible for preparing and managing the data for the view. Data propagation is implemented using the [Kotlin Coroutines](https://kotlinlang.org/docs/reference/coroutines-overview.html) framework.
+- `Screen`: The Screen is responsible for displaying the data to the user and for handling user input. It is implemented using the [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/) framework.
+- `ScreenModel`: The ScreenModel is responsible for preparing and managing the data for the `Screen`. Data propagation is implemented using the [Kotlin Coroutines](https://kotlinlang.org/docs/reference/coroutines-overview.html) framework.
 - `Manager`: The manager is responsible for handling business logic. It works with one-or-more `Repositories` to fetch data from.
 - `Repository`: The Repository is responsible for handling data operations. It provides a clean API to the rest of the app to access app data from a single, platform independent domain (independent from underlying frameworks). It knows where to get the data from and what API calls to make when data is updated. It is relying on simpler `DataSources` to manage the data. It is implemented with the help of the [Store5](https://github.com/MobileNativeFoundation/Store) framework.
-- `DataSource`: accesses the data from a single source, for example a database or a remote server. Local persistance is implemented using the [SQLDelight](https://github.com/cashapp/sqldelight) framework, remote persistance is implemented using the [Ktor](https://ktor.io/) framework.
+- `DataSource`: accesses the data from a single source, for example a database or a remote server. Local persistance is implemented using the [SQLDelight](https://github.com/cashapp/sqldelight) framework, remote persistance is implemented using GitLive's [Firebase Firestore](https://firebase.google.com/docs/firestore/) multiplatform port.
 
 ## Navigation
 
@@ -46,19 +46,19 @@ The project is organized into several modules (or packages):
 - `di`: contains dependency injection related classes.
 - `util`: additional classes that are used across the project.
 
-This structure can be altered if needed, but it is recommended to keep it as simple as possible. Singleton-like classes (`Activity` in case of Android, or `Main` in case of Desktop can be placed in the root of the package).
+This structure can be altered if needed, but it is recommended to keep it as simple as possible.
 
 ## Development
 
 Few things to keep in mind when developing the project.
 
-Have your JDK compatible with 17 version. If using Android Studio (recommended for development) you can download and set it there. This is required to build.
+Have your JDK compatible with 17 version. If using [Android Studio](https://developer.android.com/studio) (recommended for development) you can download and set it there. This is required to build.
 
 It is recommended to enable `Settings` -> `Experimental` -> `Configure all Gradle tasks during Gradle Sync` inside Android Studio to help you figure out what task can you run. This way, you can easily run your desired `run` or `build` task from the `Gradle` tab.
 
 ### Android
 
-Have your Android SDK installed and set up. You can download it from Android Studio. Your emulator should support API 21 (Android 5.0 Lollipop) or higher.
+Have your Android SDK installed and set up. You can download it from Android Studio. Your emulator should support API 21 (Android 5.0 Lollipop) or higher (recommended at least API 26).
 
 ### Desktop
 
@@ -79,6 +79,10 @@ screenModelScope.launch(dispatcherIO) {
     clickManager.incrementClickCount()
 }
 ```
+
+#### Firebase Java implementation
+
+As the [Firebase SDK](https://firebase.google.com/docs/android/setup) is Android dependent, it is not possible to use it in the desktop app. However, there is a [Java implementation](https://github.com/GitLiveApp/firebase-java-sdk) of the Firebase SDK, which can be used in the desktop app. It is not recommended to use it, as it is not officially supported by Google and it is not guaranteed to work. However, it is possible to use basic features, like a small portion of Firestore, with it.
 
 ### Web
 

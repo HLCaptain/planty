@@ -6,6 +6,8 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 local.properties
+android/release/
+android/debug/
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
@@ -47,3 +49,5 @@ bin/
 ### Configuration files ###
 **/google-services.json
 **/*.keystore
+**/*.jks
+kotlin-js-store/yarn.lock

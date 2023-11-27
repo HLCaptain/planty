@@ -1,4 +1,4 @@
-package nest.planty.ui.pairing
+package nest.planty.ui.pairing_brokers
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,10 +22,10 @@ import cafe.adriel.voyager.koin.getScreenModel
 import nest.planty.Res
 import nest.planty.domain.model.DomainBroker
 
-class PairingScreen : Screen {
+class PairingBrokerScreen : Screen {
     @Composable
     override fun Content() {
-        val screenModel = getScreenModel<PairingScreenModel>()
+        val screenModel = getScreenModel<PairingBrokerScreenModel>()
         val pairingBrokers by screenModel.pairingBrokers.collectAsState()
         PairingBrokerList(
             brokers = pairingBrokers,
