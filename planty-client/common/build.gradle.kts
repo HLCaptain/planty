@@ -13,7 +13,7 @@ plugins {
 }
 
 group = "nest"
-version = "0.1.5-alpha"
+version = "0.1.6-alpha"
 
 kotlin {
     jvmToolchain(17)
