@@ -43,4 +43,9 @@
     <string name="unassign_sensor">Unassign</string>
     <string name="pairing_brokers">Pairing brokers</string>
     <string name="pair_broker">Pair broker</string>
+    <string name="unpair_broker">Unpair broker</string>
+    <string name="no_paired_brokers">No paired brokers</string>
+    <string name="no_available_brokers">No available brokers</string>
+    <string name="on">On</string>
+    <string name="off">Off</string>
 </resources>
