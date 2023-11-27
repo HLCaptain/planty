@@ -73,7 +73,10 @@ class HomeScreen : Screen {
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text(text = Res.string.hello_x.format(getPlatformName()))
+                    Text(
+                        text = Res.string.hello_x.format(getPlatformName()),
+                        style = MaterialTheme.typography.headlineLarge
+                    )
 
                     PairBrokerButton(onClick = { navigator.push(PairingBrokerScreen()) })
 
@@ -120,7 +123,10 @@ class HomeScreen : Screen {
         ) {
             var plantName by rememberSaveable { mutableStateOf("") }
             var plantDescription by rememberSaveable { mutableStateOf("") }
-            Text(text = Res.string.add_plant)
+            Text(
+                text = Res.string.add_plant,
+                style = MaterialTheme.typography.headlineLarge
+            )
             TextField(
                 value = plantName,
                 onValueChange = { plantName = it },
